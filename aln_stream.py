@@ -7,7 +7,7 @@ from skbio.alignment import local_pairwise_align_protein as lalign, global_pairw
 from skbio import Protein
 
 lit.set_page_config(layout='wide')
-lit.text(proc.check_output('blastp -help'.split())
+lit.text(proc.check_output('blastp -help'.split()))
 lit.write("""
 # Welcome to the AMPDB Sequence Alignment Toolbox!
 *A toolbox for all your alignment needs.*

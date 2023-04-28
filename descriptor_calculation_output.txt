@@ -1,0 +1,104 @@
+-->Composition features: 
+Amino acid counts:
+For all amino acids:
+**A**:  44
+**R**:  24
+**N**:  10
+**D**:  21
+**C**:  5
+**Q**:  25
+**E**:  22
+**G**:  29
+**H**:  14
+**I**:  14
+**L**:  71
+**K**:  5
+**M**:  10
+**F**:  13
+**P**:  41
+**S**:  30
+**T**:  34
+**W**:  5
+**Y**:  12
+**V**:  28
+**O**:  0
+**U**:  0
+**B**:  0
+**Z**:  0
+**J**:  0
+**X**:  0
+For the amino acids present in input sequence:
+**A**:  44
+**R**:  24
+**D**:  21
+**C**:  5
+**Q**:  25
+**E**:  22
+**G**:  29
+**H**:  14
+**I**:  14
+**L**:  71
+**K**:  5
+**F**:  13
+**P**:  41
+**T**:  34
+**W**:  5
+**Y**:  12
+**V**:  28
+Most Common Residue: L: 71
+Least Common Residue: C: 5
+Residues not present in the sequence: N, M, S, O, U, B, Z, J, X
+No. of Hydrophilic residues: 202
+No. of Hydrophobic residues: 255
+No. of Basic residues: 43
+No. of Acidic residues: 43
+Amino Acid Frequencies: 
+For all amino acids:
+**A**:  0.096
+**R**:  0.053
+**N**:  0.022
+**D**:  0.046
+**C**:  0.011
+**Q**:  0.055
+**E**:  0.048
+**G**:  0.063
+**H**:  0.031
+**I**:  0.031
+**L**:  0.155
+**K**:  0.011
+**M**:  0.022
+**F**:  0.028
+**P**:  0.09
+**S**:  0.066
+**T**:  0.074
+**W**:  0.011
+**Y**:  0.026
+**V**:  0.061
+**O**:  0.0
+**U**:  0.0
+**B**:  0.0
+**Z**:  0.0
+**J**:  0.0
+**X**:  0.0
+For the amino acids present in input sequence:
+**A**:  0.096
+**R**:  0.053
+**N**:  0.022
+**D**:  0.046
+**C**:  0.011
+**Q**:  0.055
+**E**:  0.048
+**G**:  0.063
+**H**:  0.031
+**I**:  0.031
+**L**:  0.155
+**K**:  0.011
+**M**:  0.022
+**F**:  0.028
+**P**:  0.09
+**S**:  0.066
+**T**:  0.074
+**W**:  0.011
+**Y**:  0.026
+**V**:  0.061
+Secondary Structure Fraction (Helix, Turn, Sheet): 0.313, 0.241, 0.322

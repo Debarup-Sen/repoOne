@@ -1,2 +1,2 @@
 ncbi-blast+
-t-coffee
+muscle

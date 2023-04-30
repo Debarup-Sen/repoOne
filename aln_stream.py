@@ -43,7 +43,7 @@ if tool == 'BLAST':
               else '12' if 'Seqalign (JSON)' in outfmt
               else None)
     submit = lit.button('Submit')
-    if query and 'AMPDB_' in query:
+    if query and len([i for i in query.split('\n') if i!=''])==1 and 'AMPDB_' in query:
         with open('master_dataset.tsv') as f:
             l = ' '
             while(True):
@@ -75,7 +75,7 @@ if tool == 'MUSCLE':
     lit.markdown('<br>', unsafe_allow_html=True)
     submit = lit.button('Submit')
     if multiseq and submit:
-        if 'AMPDB_' in multiseq:
+        if len([i for i in multiseq.split('\n') if i!=''])==1 and 'AMPDB_' in multiseq:
             multiseq = [i for i in multiseq.replace(' ', '').split('\n') if i!='']
             with open('master_dataset.tsv') as f, open(r'mafft_input.txt', 'w') as g:
                 for k in multiseq:
@@ -129,7 +129,7 @@ if tool == 'Needleman-Wunsch':
         elif 'AMPDB_' in subject and subject.replace('_', '').isalnum() is False:
             lit.error("Some unrecognized character is present in the Acc. ID. Please re-check!")
             subject = None
-        if query and 'AMPDB_' in query:
+        if query and len([i for i in query.split('\n') if i!=''])==1 and 'AMPDB_' in query:
             with open('master_dataset.tsv') as f:
                 l = ' '
                 while(True):
@@ -143,7 +143,7 @@ if tool == 'Needleman-Wunsch':
                         query = j[6]
                         break
                     
-        if subject and 'AMPDB_' in subject:
+        if subject and len([i for i in subject.split('\n') if i!=''])==1 and 'AMPDB_' in subject:
             with open('master_dataset.tsv') as f:
                 l = ' '
                 while(True):
@@ -200,7 +200,7 @@ if tool == 'Smith-Waterman':
         elif 'AMPDB_' in subject and subject.replace('_', '').isalnum() is False:
             lit.error("Some unrecognized character is present in the Acc. ID. Please re-check!")
             subject = None
-        if query and 'AMPDB_' in query:
+        if query and len([i for i in query.split('\n') if i!=''])==1 and 'AMPDB_' in query:
             with open('master_dataset.tsv') as f:
                 l = ' '
                 while(True):
@@ -213,7 +213,7 @@ if tool == 'Smith-Waterman':
                     if query in j[1]:
                         query = j[6]
                         break
-        if subject and 'AMPDB_' in subject:
+        if subject and len([i for i in subject.split('\n') if i!=''])==1 and 'AMPDB_' in subject:
             with open('master_dataset.tsv') as f:
                 l = ' '
                 while(True):

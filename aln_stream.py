@@ -95,7 +95,7 @@ if tool == 'MAFFT':
             open('mafft_input.txt', 'w').write(multiseq)
     if multiseq and submit:
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
-        proc.run('t_coffee -infile mafft_input.txt -outfile mafft_output'.split())
+        proc.run('muscle -in mafft_input.txt -out mafft_output'.split())
         lit.info("Your output below (In case you do not see any output, please re-check your input for invalid characters or non-standard residues):")
         lit.text(open(r'mafft_output').read())
         lit.download_button("Download output file", open('mafft_output'), file_name='MAFFT_out')

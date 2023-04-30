@@ -34,7 +34,7 @@ if tool == 'BLAST':
               else '3' if 'Flat query-anchored showing identities' in outfmt
               else '4' if 'Flat query-anchored no identities' in outfmt
               else '5' if 'BLAST XML' in outfmt
-              else '6' if 'Tabular' in outfmt
+              else '6' if outfmt=='7) Tabular'
               else '7' if 'Tabular with comment lines' in outfmt
               else '8' if 'Seqalign (Text ASN.1)' in outfmt
               else '9' if 'Seqalign (Binary ASN.1)' in outfmt

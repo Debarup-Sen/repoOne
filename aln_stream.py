@@ -15,7 +15,7 @@ lit.write("""
 """)
 tool = lit.radio(
     "What\'s your alignment choice?",
-    ('BLAST', 'MAFFT', 'Needleman-Wunsch', 'Smith-Waterman'))
+    ('BLAST', 'MUSCLE', 'Needleman-Wunsch', 'Smith-Waterman'))
 
 if tool == 'BLAST':
     query = lit.text_area('Enter your input sequence/AMPDB Acc. ID here')
@@ -70,7 +70,7 @@ if tool == 'BLAST':
     elif submit and not query:
         lit.error("Please enter input sequence!")
 
-if tool == 'MAFFT':
+if tool == 'MUSCLE':
     multiseq = lit.text_area('Enter your input sequences (in FASTA format)/AMPDB Acc. IDs (one in each line) here:')
     lit.markdown('<br>', unsafe_allow_html=True)
     submit = lit.button('Submit')

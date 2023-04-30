@@ -1,2 +1,2 @@
 ncbi-blast+
-mafft
+t-coffee

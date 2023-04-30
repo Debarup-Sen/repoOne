@@ -18,7 +18,7 @@ tool = lit.radio(
     ('BLAST', 'MUSCLE', 'Needleman-Wunsch', 'Smith-Waterman'))
 
 if tool == 'BLAST':
-    query = lit.text_area('Enter your input sequence(in FASTA or plain text sequence format)/AMPDB Acc. ID here').upper()
+    query = lit.text_area('Enter your input sequence (in FASTA or plain text sequence format)/AMPDB Acc. ID here').upper()
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(
         "What is your output format preference? Available formats:",

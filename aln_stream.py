@@ -18,15 +18,15 @@ tool = lit.radio(
     ('BLAST', 'MUSCLE', 'Needleman-Wunsch', 'Smith-Waterman'))
 
 if tool == 'BLAST':
-    query = lit.text_area('Enter your input sequence/AMPDB Acc. ID here')
+    query = lit.text_area('Enter your input sequence(in FASTA or plain text sequence format)/AMPDB Acc. ID here').upper()
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(
         "What is your output format preference? Available formats:",
-        ('Pairwise', 'Query-anchored showing identities', 
-     'Query-anchored no identities', 'Flat query-anchored showing identities',
-     'Flat query-anchored no identities', 'BLAST XML', 'Tabular', 'Tabular with comment lines',
-     'Seqalign (Text ASN.1)', 'Seqalign (Binary ASN.1)', 'Comma-separated values',
-     'BLAST archive (ASN.1)', 'Seqalign (JSON)')
+        ('1) Pairwise', '2) Query-anchored showing identities', 
+     '3) Query-anchored no identities', '4) Flat query-anchored showing identities',
+     '5) Flat query-anchored no identities', '6) BLAST XML', '7) Tabular', '8) Tabular with comment lines',
+     '9) Seqalign (Text ASN.1)', '10) Seqalign (Binary ASN.1)', '11) Comma-separated values',
+     '12) BLAST archive (ASN.1)', '13) Seqalign (JSON)')
         )
     outfmt = ('0' if outfmt=='Pairwise'
               else '1' if outfmt=='Query-anchored showing identities'
@@ -60,9 +60,9 @@ if tool == 'BLAST':
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
         open('blast_input.txt', 'w').write(query)
         proc.run(('blastp -query blast_input.txt -db ampdb -out blast_output -outfmt '+outfmt).split())
-        lit.info("Your output below:")
+        lit.info("Your output below: [Formats 7-13 show no output when no hits are found]")
         if outfmt=='6' or outfmt=='10':
-            lit.text('(Please choose "Tabular with comment lines" to see column headers')
+            lit.text('(Please choose "Tabular with comment lines" to see column headers)')
             lit.text(''.join((open('blast_output').readlines())))
         else:
             lit.text(''.join((open('blast_output').readlines()[18:])))
@@ -71,7 +71,7 @@ if tool == 'BLAST':
         lit.error("Please enter input sequence!")
 
 if tool == 'MUSCLE':
-    multiseq = lit.text_area('Enter your input sequences (in FASTA format)/AMPDB Acc. IDs (one in each line) here:')
+    multiseq = lit.text_area('Enter your input sequences (in FASTA format)/AMPDB Acc. IDs (one in each line) here:').upper()
     lit.markdown('<br>', unsafe_allow_html=True)
     submit = lit.button('Submit')
     if multiseq and submit:
@@ -105,8 +105,8 @@ if tool == 'MUSCLE':
 
 if tool == 'Needleman-Wunsch':
     lit.text("FASTA format, plain text sequence format supported.")
-    query = lit.text_area('Enter your query sequence here:')
-    subject = lit.text_area('Enter your subject sequence here:')
+    query = lit.text_area('Enter your query sequence here:').upper()
+    subject = lit.text_area('Enter your subject sequence here:').upper()
     submit = lit.button('Submit')
     if query and subject and submit:
         if '>' in query:
@@ -176,8 +176,8 @@ if tool == 'Needleman-Wunsch':
 
 
 if tool == 'Smith-Waterman':
-    query = lit.text_area('Enter your query sequence here')
-    subject = lit.text_area('Enter your subject sequence here')
+    query = lit.text_area('Enter your query sequence here').upper()
+    subject = lit.text_area('Enter your subject sequence here').upper()
     submit = lit.button('Submit')
     if query and subject and submit:
         if '>' in query:

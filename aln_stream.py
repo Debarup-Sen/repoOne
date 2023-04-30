@@ -154,7 +154,7 @@ if tool == 'Needleman-Wunsch':
                         break
                     j = i.split('\t')
                     if subject in j[1]:
-                        subject = j[24]
+                        subject = j[6]
                         break
         if query and subject:
             lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
@@ -224,7 +224,7 @@ if tool == 'Smith-Waterman':
                         break
                     j = i.split('\t')
                     if subject in j[1]:
-                        subject = j[24]
+                        subject = j[6]
                         break
         if query and subject:
             lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")

@@ -28,19 +28,19 @@ if tool == 'BLAST':
      '9) Seqalign (Text ASN.1)', '10) Seqalign (Binary ASN.1)', '11) Comma-separated values',
      '12) BLAST archive (ASN.1)', '13) Seqalign (JSON)')
         )
-    outfmt = ('0' if outfmt=='Pairwise'
-              else '1' if outfmt=='Query-anchored showing identities'
-              else '2' if outfmt=='Query-anchored no identities'
-              else '3' if outfmt=='Flat query-anchored showing identities'
-              else '4' if outfmt=='Flat query-anchored no identities'
-              else '5' if outfmt=='BLAST XML'
-              else '6' if outfmt=='Tabular'
-              else '7' if outfmt=='Tabular with comment lines'
-              else '8' if outfmt=='Seqalign (Text ASN.1)'
-              else '9' if outfmt=='Seqalign (Binary ASN.1)'
-              else '10' if outfmt=='Comma-separated values'
-              else '11' if outfmt=='BLAST archive (ASN.1)'
-              else '12' if outfmt=='Seqalign (JSON)'
+    outfmt = ('0' if 'Pairwise'
+              else '1' if 'Query-anchored showing identities' in outfmt
+              else '2' if 'Query-anchored no identities' in outfmt
+              else '3' if 'Flat query-anchored showing identities' in outfmt
+              else '4' if 'Flat query-anchored no identities' in outfmt
+              else '5' if 'BLAST XML' in outfmt
+              else '6' if 'Tabular' in outfmt
+              else '7' if 'Tabular with comment lines' in outfmt
+              else '8' if 'Seqalign (Text ASN.1)' in outfmt
+              else '9' if 'Seqalign (Binary ASN.1)' in outfmt
+              else '10' if 'Comma-separated values' in outfmt
+              else '11' if 'BLAST archive (ASN.1)' in outfmt
+              else '12' if 'Seqalign (JSON)' in outfmt
               else None)
     submit = lit.button('Submit')
     if query and 'AMPDB_' in query:

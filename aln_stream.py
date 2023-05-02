@@ -176,7 +176,7 @@ if tool == 'Needleman-Wunsch':
 
 
 if tool == 'Smith-Waterman':
-    FASTA format, plain text sequence format supported.
+    lit.text("FASTA format, plain text sequence format supported.")
     query = lit.text_area('Enter your query sequence here').upper()
     subject = lit.text_area('Enter your subject sequence here').upper()
     submit = lit.button('Submit')

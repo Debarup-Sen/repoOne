@@ -28,7 +28,7 @@ if tool == 'BLAST':
      '9) Seqalign (Text ASN.1)', '10) Seqalign (Binary ASN.1)', '11) Comma-separated values',
      '12) BLAST archive (ASN.1)', '13) Seqalign (JSON)')
         )
-    outfmt = ('0' if 'Pairwise'
+    outfmt = ('0' if 'Pairwise' in outfmt
               else '1' if 'Query-anchored showing identities' in outfmt
               else '2' if 'Query-anchored no identities' in outfmt
               else '3' if 'Flat query-anchored showing identities' in outfmt

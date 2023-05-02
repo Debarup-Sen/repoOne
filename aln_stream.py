@@ -61,9 +61,11 @@ if tool == 'BLAST':
         open('blast_input.txt', 'w').write(query)
         proc.run(('blastp -query blast_input.txt -db ampdb -out blast_output -outfmt '+outfmt).split())
         lit.info("Your output below: [Formats 7-13 show no output when no hits are found]")
-        if outfmt=='6' or outfmt=='10' or outfmt=='7':
+        if outfmt=='6' or outfmt=='10':
             lit.text('(Please choose "Tabular with comment lines" to see column headers)')
             lit.text(''.join((open('blast_output').readlines())))
+        elif outfmt=='7':
+            lit.text(''.join((open('blast_output').readlines()[2:])))
         else:
             lit.text(''.join((open('blast_output').readlines()[18:])))
         lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')

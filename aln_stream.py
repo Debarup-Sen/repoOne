@@ -65,7 +65,7 @@ if tool == 'BLAST':
             lit.text('(Please choose "Tabular with comment lines" to see column headers)')
             lit.text(''.join((open('blast_output').readlines())))
         elif outfmt=='7':
-            lit.text(''.join((open('blast_output').readlines()[2:])))
+            lit.text(''.join((open('blast_output').readlines()[1:])))
         else:
             lit.text(''.join((open('blast_output').readlines()[18:])))
         lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')

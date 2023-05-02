@@ -43,6 +43,7 @@ if tool == 'BLAST':
               else '12' if 'Seqalign (JSON)' in outfmt
               else None)
     submit = lit.button('Submit')
+    lit.text(outfmt)
     if query and len([i for i in query.split('\n') if i!=''])==1 and 'AMPDB_' in query:
         with open('master_dataset.tsv') as f:
             l = ' '

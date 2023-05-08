@@ -95,7 +95,7 @@ if tool == 'MUSCLE':
                             break
         else:
             open('mafft_input.txt', 'w').write(multiseq)
-    open('mafft_input.txt').readlines()
+    lit.text(open('mafft_input.txt').readlines())
     if multiseq and submit:
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
         proc.run('muscle -in mafft_input.txt -out mafft_output'.split())

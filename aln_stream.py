@@ -54,7 +54,7 @@ if tool == 'BLAST':
                     break
                 j = i.split('\t')
                 if query in j[1]:
-                    query = '>'+query+'\n'+j[6]
+                    query = '>'+query+'\n'+j[3]
                     break                
     if query and submit:
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
@@ -91,7 +91,7 @@ if tool == 'MUSCLE':
                             break
                         j = i.split('\t')
                         if k in j[1]:
-                            g.write('>'+k+'\n'+j[6]+'\n')
+                            g.write('>'+k+'\n'+j[3]+'\n')
                             break
         else:
             open('mafft_input.txt', 'w').write(multiseq)
@@ -142,7 +142,7 @@ if tool == 'Needleman-Wunsch':
                         break
                     j = i.split('\t')
                     if query in j[1]:
-                        query = j[6]
+                        query = j[3]
                         break
                     
         if subject and len([i for i in subject.split('\n') if i!=''])==1 and 'AMPDB_' in subject:
@@ -156,7 +156,7 @@ if tool == 'Needleman-Wunsch':
                         break
                     j = i.split('\t')
                     if subject in j[1]:
-                        subject = j[6]
+                        subject = j[3]
                         break
         if query and subject:
             lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
@@ -214,7 +214,7 @@ if tool == 'Smith-Waterman':
                         break
                     j = i.split('\t')
                     if query in j[1]:
-                        query = j[6]
+                        query = j[3]
                         break
         if subject and len([i for i in subject.split('\n') if i!=''])==1 and 'AMPDB_' in subject:
             with open('master_dataset.tsv') as f:
@@ -227,7 +227,7 @@ if tool == 'Smith-Waterman':
                         break
                     j = i.split('\t')
                     if subject in j[1]:
-                        subject = j[6]
+                        subject = j[3]
                         break
         if query and subject:
             lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")

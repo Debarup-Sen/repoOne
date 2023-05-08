@@ -109,7 +109,7 @@ if tool == 'Needleman-Wunsch':
     lit.text("FASTA format, plain text sequence format supported.")
     query = lit.text_area('Enter your query sequence here:').upper()
     subject = lit.text_area('Enter your subject sequence here:').upper()
-    query
+    subject
     submit = lit.button('Submit')
     if query and subject and submit:
         if '>' in query:

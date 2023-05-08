@@ -161,7 +161,7 @@ if tool == 'Needleman-Wunsch':
                         break
         if query and subject:
             lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
-            alignment, score, start_end_positions = galign(Protein(query), Protein(subject))
+            alignment, score, start_end_positions = galign(Protein(query.strip()), Protein(subject.strip()))
             lit.info("Your output below:")
             lit.text(alignment)
             alignment.write(open('NWFile', 'w'))

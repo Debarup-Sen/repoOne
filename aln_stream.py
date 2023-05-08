@@ -77,7 +77,7 @@ if tool == 'MUSCLE':
     lit.markdown('<br>', unsafe_allow_html=True)
     submit = lit.button('Submit')
     if multiseq and submit:
-        if len([i for i in multiseq.split('\n') if i!=''])==1 and 'AMPDB_' in multiseq:
+        if len([i for i in multiseq.split('\n') if i!=''])>=1 and 'AMPDB_' in multiseq:
             multiseq = [i for i in multiseq.replace(' ', '').split('\n') if i!='']
             with open('master_dataset.tsv') as f, open(r'mafft_input.txt', 'w') as g:
                 for k in multiseq:
@@ -95,7 +95,7 @@ if tool == 'MUSCLE':
                             break
         else:
             open('mafft_input.txt', 'w').write(multiseq)
-    lit.text(open('mafft_input.txt').readlines())
+    
     if multiseq and submit:
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
         proc.run('muscle -in mafft_input.txt -out mafft_output'.split())

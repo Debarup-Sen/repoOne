@@ -175,7 +175,7 @@ if tool == 'Needleman-Wunsch':
             lit.text("Full alignment:")
             alignment.write(open('NWFile', 'w'))
             lines = [i for i in open('NWFile').readlines() if i!='']
-            '>'+myquery+'\n'+lines[0]+'>'+mysubject+'\n'+lines[1]
+            '>'+myquery+'\n'+lines[1]+'>'+mysubject+'\n'+lines[2]
             #lit.write(open('NWFile').read())
             lit.text("Score: "+str(score))
             open('NWFile', 'w').write('AMPDB Needleman-Wunsch Output:\n\nAlignment\n')

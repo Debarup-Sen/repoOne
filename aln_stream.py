@@ -70,7 +70,11 @@ if tool == 'BLAST':
             lit.text('Binary output cannot be displayed in browser. Please download file to view output')
         else:
             lit.text(''.join((open('blast_output').readlines()[18:])))
-        lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
+        
+        if  outfmt=='9':
+            lit.download_button("Download output file", open('blast_output', 'rb'), file_name='BLAST_out')
+        else:
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
     elif submit and not query:
         lit.error("Please enter input sequence!")
 

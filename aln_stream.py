@@ -179,11 +179,11 @@ if tool == 'Needleman-Wunsch':
             mysubject = '>'+mysubject+'\n'+lines[3]
             lit.text(myquery)
             lit.text(mysubject)
-            #lit.write(open('NWFile').read())
             lit.text("Score: "+str(score))
-            open('NWFile', 'w').write('AMPDB Needleman-Wunsch Output:\n\nAlignment\n')
-            alignment.write(open('NWFile', 'a'))
-            open('NWFile', 'a').write("Score: "+str(score)+'\n')
+            my_write_file = 'AMPDB Needleman-Wunsch Output:\n\nAlignment\n'+myquery+mysubject+"Score: "+str(score)+'\n'
+            open('NWFile', 'w').write(my_write_file)
+            lit.markdown('''<br>''', unsafe_allow_html=True)
+            lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.download_button("Download output file", open('NWFile'), file_name='NW_out')
     elif submit and (not query or not subject):
         lit.error("Please enter input sequence!")

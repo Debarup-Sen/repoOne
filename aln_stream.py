@@ -116,7 +116,6 @@ if tool == 'Needleman-Wunsch':
     lit.text("FASTA format, plain text sequence format supported.")
     query = lit.text_area('Enter your query sequence here:').upper()
     subject = lit.text_area('Enter your subject sequence here:').upper()
-    subject
     submit = lit.button('Submit')
     if query and subject and submit:
         if '>' in query:
@@ -175,7 +174,9 @@ if tool == 'Needleman-Wunsch':
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.text("Full alignment:")
-            lit.write(open('NWFile').read())
+            lines = open('NWFile').readlines()
+            lit.write('>'+query+'\n'+lines[0]+'>'+subject+'\n'+lines[1])
+            #lit.write(open('NWFile').read())
             lit.text("Score: "+str(score))
             open('NWFile', 'w').write('AMPDB Needleman-Wunsch Output:\n\nAlignment\n')
             alignment.write(open('NWFile', 'a'))

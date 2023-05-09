@@ -180,7 +180,7 @@ if tool == 'Needleman-Wunsch':
             lit.text(myquery)
             lit.text(mysubject)
             lit.text("Score: "+str(score))
-            my_write_file = 'AMPDB Needleman-Wunsch Output:\n\nAlignment\n'+myquery+'\n'+mysubject+"Score: "+str(score)+'\n'
+            my_write_file = 'AMPDB Needleman-Wunsch Output:\n\nAlignment\n'+myquery+'\n'+mysubject+"\nScore: "+str(score)+'\n'
             open('NWFile', 'w').write(my_write_file)
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.markdown('''<br>''', unsafe_allow_html=True)
@@ -257,7 +257,7 @@ if tool == 'Smith-Waterman':
             lit.text(myquery)
             lit.text(mysubject)
             lit.text("Score: "+str(score))
-            my_write_file = 'AMPDB Smith-Waterman Output:\n\nAlignment\n'+myquery+'\n'+mysubject+"Score: "+str(score)+'\n'
+            my_write_file = 'AMPDB Smith-Waterman Output:\n\nAlignment\n'+myquery+'\n'+mysubject+"\nScore: "+str(score)+'\n'
             open('SWFile', 'w').write(my_write_file)
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.markdown('''<br>''', unsafe_allow_html=True)

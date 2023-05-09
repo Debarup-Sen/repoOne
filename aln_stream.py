@@ -66,6 +66,8 @@ if tool == 'BLAST':
             lit.text(''.join((open('blast_output').readlines())))
         elif outfmt=='7':
             lit.text(''.join((open('blast_output').readlines()[1:])))
+        elif outfmt=='9':
+            lit.text('Binary output cannot be displayed in browser. Please download file to view output')
         else:
             lit.text(''.join((open('blast_output').readlines()[18:])))
         lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')

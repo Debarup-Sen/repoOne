@@ -243,7 +243,7 @@ if tool == 'Smith-Waterman':
                         break
         if query and subject:
             lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
-            alignment, score, start_end_positions = lalign(Protein(query), Protein(subject))
+            alignment, score, start_end_positions = lalign(Protein(query.strip()), Protein(subject.strip()))
             lit.info("Your output below:")
             lit.text(alignment)
             alignment.write(open('SWFile', 'w'))

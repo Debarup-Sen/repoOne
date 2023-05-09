@@ -170,12 +170,12 @@ if tool == 'Needleman-Wunsch':
             alignment, score, start_end_positions = galign(Protein(query.strip()), Protein(subject.strip()))
             lit.info("Your output below:")
             lit.text(alignment)
-            alignment.write(open('NWFile', 'w'))
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.text("Full alignment:")
+            alignment.write(open('NWFile', 'w'))
             lines = [i for i in open('NWFile').readlines() if i!='']
-            lit.write('>'+myquery+'\n'+lines[0]+'>'+mysubject+'\n'+lines[1])
+            '>'+myquery+'\n'+lines[0]+'>'+mysubject+'\n'+lines[1]
             #lit.write(open('NWFile').read())
             lit.text("Score: "+str(score))
             open('NWFile', 'w').write('AMPDB Needleman-Wunsch Output:\n\nAlignment\n')

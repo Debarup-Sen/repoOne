@@ -176,7 +176,7 @@ if tool == 'Needleman-Wunsch':
             lines = [i for i in open('NWFile').readlines() if i!='']
             lit.text("Full alignment:")
             myquery = '>'+myquery+'\n'+lines[1]
-            mysubject = '>'+mysubject+'\n'+lines[2]
+            mysubject = '>'+mysubject+'\n'+lines[3]
             lit.text(myquery)
             lit.text(mysubject)
             #lit.write(open('NWFile').read())

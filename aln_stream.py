@@ -180,7 +180,7 @@ if tool == 'Needleman-Wunsch':
             lit.text(myquery)
             lit.text(mysubject)
             lit.text("Score: "+str(score))
-            my_write_file = 'AMPDB Needleman-Wunsch Output:\n\nAlignment\n'+myquery+mysubject+"Score: "+str(score)+'\n'
+            my_write_file = 'AMPDB Needleman-Wunsch Output:\n\nAlignment\n'+myquery+'\n'+mysubject+"Score: "+str(score)+'\n'
             open('NWFile', 'w').write(my_write_file)
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.markdown('''<br>''', unsafe_allow_html=True)
@@ -191,8 +191,8 @@ if tool == 'Needleman-Wunsch':
 
 if tool == 'Smith-Waterman':
     lit.text("FASTA format, plain text sequence format supported.")
-    query = lit.text_area('Enter your query sequence here').upper()
-    subject = lit.text_area('Enter your subject sequence here').upper()
+    query = myquery = lit.text_area('Enter your query sequence here').upper()
+    subject = mysubject = lit.text_area('Enter your subject sequence here').upper()
     submit = lit.button('Submit')
     if query and subject and submit:
         if '>' in query:
@@ -249,12 +249,18 @@ if tool == 'Smith-Waterman':
             alignment.write(open('SWFile', 'w'))
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.markdown('''<br>''', unsafe_allow_html=True)
+            alignment.write(open('SWFile', 'w'))
+            lines = [i for i in open('SWFile').readlines() if i!='']
             lit.text("Full alignment:")
-            lit.write(open('SWFile').read())
+            myquery = '>'+myquery+'\n'+lines[1]
+            mysubject = '>'+mysubject+'\n'+lines[3]
+            lit.text(myquery)
+            lit.text(mysubject)
             lit.text("Score: "+str(score))
-            open('SWFile', 'w').write('AMPDB Smith-Waterman Output:\n\nAlignment\n')
-            alignment.write(open('SWFile', 'a'))
-            open('SWFile', 'a').write("Score: "+str(score)+'\n')
+            my_write_file = 'AMPDB Smith-Waterman Output:\n\nAlignment\n'+myquery+'\n'+mysubject+"Score: "+str(score)+'\n'
+            open('SWFile', 'w').write(my_write_file)
+            lit.markdown('''<br>''', unsafe_allow_html=True)
+            lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.download_button("Download output file", open('SWFile'), file_name='SW_out')
     elif submit and not query:
         lit.error("Please enter input sequence!")

@@ -18,7 +18,7 @@ tool = lit.radio(
     ('BLASTp (local alignment against AMPDB)', 'MUSCLE (Multiple Sequence Alignment)', 'Needleman-Wunsch (Global Pairwise Alignment)', 'Smith-Waterman (Local Pairwise Alignment)'))
 
 if 'BLASTp' in tool:
-    query = lit.text_area('Enter your input sequence (in FASTA or plain text sequence format)/AMPDB Acc. ID here').upper()
+    query = lit.text_area('Enter your input protein sequence (in FASTA or plain text sequence format)/AMPDB Acc. ID, e.g. AMPDB_111 here').upper()
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(
         "What is your output format preference? Available formats:",

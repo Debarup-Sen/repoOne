@@ -15,9 +15,9 @@ lit.write("""
 """)
 tool = lit.radio(
     "What\'s your alignment choice?",
-    ('BLASTp', 'MUSCLE', 'Needleman-Wunsch', 'Smith-Waterman'))
+    ('BLASTp (local alignment against AMPDB)', 'MUSCLE (Multiple Sequence Alignment)', 'Needleman-Wunsch (Global Pairwise Alignment)', 'Smith-Waterman (Local Pairwise Alignment)'))
 
-if tool == 'BLAST':
+if 'BLASTp' in tool:
     query = lit.text_area('Enter your input sequence (in FASTA or plain text sequence format)/AMPDB Acc. ID here').upper()
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(
@@ -78,7 +78,7 @@ if tool == 'BLAST':
     elif submit and not query:
         lit.error("Please enter input sequence!")
 
-if tool == 'MUSCLE':
+if 'MUSCLE' in tool:
     multiseq = lit.text_area('Enter your input sequences (in FASTA format)/AMPDB Acc. IDs (one in each line) here:').upper()
     lit.markdown('<br>', unsafe_allow_html=True)
     submit = lit.button('Submit')
@@ -112,7 +112,7 @@ if tool == 'MUSCLE':
         lit.error("Please enter input sequence!")
 
 
-if tool == 'Needleman-Wunsch':
+if 'Needleman-Wunsch' in tool:
     lit.text("FASTA format, plain text sequence format supported.")
     query = myquery = lit.text_area('Enter your query sequence here:').upper()
     subject = mysubject = lit.text_area('Enter your subject sequence here:').upper()
@@ -189,7 +189,7 @@ if tool == 'Needleman-Wunsch':
         lit.error("Please enter input sequence!")
 
 
-if tool == 'Smith-Waterman':
+if 'Smith-Waterman' in tool:
     lit.text("FASTA format, plain text sequence format supported.")
     query = myquery = lit.text_area('Enter your query sequence here').upper()
     subject = mysubject = lit.text_area('Enter your subject sequence here').upper()

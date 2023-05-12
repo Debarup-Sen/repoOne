@@ -15,7 +15,7 @@ lit.write("""
 """)
 tool = lit.radio(
     "What\'s your alignment choice?",
-    ('BLAST', 'MUSCLE', 'Needleman-Wunsch', 'Smith-Waterman'))
+    ('BLASTp', 'MUSCLE', 'Needleman-Wunsch', 'Smith-Waterman'))
 
 if tool == 'BLAST':
     query = lit.text_area('Enter your input sequence (in FASTA or plain text sequence format)/AMPDB Acc. ID here').upper()

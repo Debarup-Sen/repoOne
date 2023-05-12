@@ -21,7 +21,7 @@ if 'BLASTp' in tool:
     query = lit.text_area('Enter your input protein sequence (in FASTA or plain text sequence format/AMPDB Acc. ID, e.g. AMPDB_111) here').upper()
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(
-        "What is your output format preference? Available formats:",
+        "Select the output format preference? Available formats:",
         ('1) Pairwise', '2) Query-anchored showing identities', 
      '3) Query-anchored no identities', '4) Flat query-anchored showing identities',
      '5) Flat query-anchored no identities', '6) BLAST XML', '7) Tabular', '8) Tabular with comment lines',

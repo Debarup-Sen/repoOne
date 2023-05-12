@@ -10,7 +10,7 @@ lit.set_page_config(layout='wide')
 
 lit.write("""
 # Welcome to the AMPDB Sequence Alignment Toolbox!
-*A toolbox for all your alignment needs.*
+*A toolbox for all alignment purposes.*
 
 """)
 tool = lit.radio(

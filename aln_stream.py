@@ -65,7 +65,7 @@ if 'BLASTp' in tool:
         lit.info("Your output below: [Formats 7-13 show no output when no hits are found]")
         if outfmt=='6' or outfmt=='10':
             lit.text('(Please choose "Tabular with comment lines" to see column headers)')
-            lit.table(pd.DataFrame([i.strip().split('\t') for i in open('blast_output').readlines()]))
+            lit.table(pd.DataFrame([(i.strip().split(',') if ',' in i else i.strip().split('\t')) for i in open('blast_output').readlines()]))
         elif outfmt=='7':
             lit.text(''.join((open('blast_output').readlines()[1:])))
         elif outfmt=='9':

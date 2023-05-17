@@ -43,6 +43,7 @@ if 'BLASTp' in tool:
               else '10' if 'Comma-separated values' in outfmt
               else '11' if 'BLAST archive (ASN.1)' in outfmt
               else '12' if 'Seqalign (JSON)' in outfmt
+              else 'def' if 'Default' in outfmt
               else None)
     submit = lit.button('Submit')
     if query and len([i for i in query.split('\n') if i!=''])==1 and 'AMPDB_' in query:
@@ -61,28 +62,112 @@ if 'BLASTp' in tool:
     if query and submit:
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
         open('blast_input.txt', 'w').write(query)
-        proc.run(('blastp -query blast_input.txt -db ampdb -out blast_output -outfmt '+outfmt).split())
+        if outfmt == 'def':
+            proc.run(('blastp -query blast_input.txt -db ampdb -out blast_output_def1 -outfmt 0').split())
+            proc.run(('blastp -query blast_input.txt -db ampdb -out blast_output_def2 -outfmt 7').split())
+        else:
+            proc.run(('blastp -query blast_input.txt -db ampdb -out blast_output -outfmt '+outfmt).split())
+            
         lit.info("Your output below: [Formats 7-13 show no output when no hits are found]")
-        if outfmt=='6' or outfmt=='10':
-            lit.text('(Please choose "Tabular with comment lines" to see column headers)')
-            lit.table(pd.DataFrame([(i.strip().split(',') if ',' in i else i.strip().split('\t')) for i in open('blast_output').readlines()]))
-        elif outfmt=='7':
-            myFile = [i.strip().split('\t') for i in open('blast_output').readlines()]
+
+        if outfmt == 'def':
+            myFile = [i for i in open('blast_output_def2').readlines()]
             headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
-            data = [i for i in myFile if '#' not in i]
+            data = [i.strip().split('\t') for i in myFile if '#' not in i]
+            myDF = pd.DataFrame(data, columns=headers)
+            del myFile, data, headers
+            lit.table(myDF)
+            lit.markdown('<br><br><u><b>*Alignments:*</b></u><br>', unsafe_allow_html=True)
+            myDF.to_csv('blast_output_def2', sep='\t')
+
+            output1 = ''.join(open('blast_output_def1').readlines()[18:])
+            crsr = 0
+            for i in range(len(output1)):
+                if '>' in output1[i]:
+                    crsr = i
+                    break
+            output1 = ''.join(output1[crsr:])
+            lit.text(output1)
+            open('blast_output_def1', 'w').write(output1)
+
+            open('blast_output', 'w').write(open('blast_output_def2').read() +'\n\nAlignments:\n'+ open('blast_output_def1').read())
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+        elif outfmt == '0':
+            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+            lit.text(myFile)
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+        elif outfmt == '1':
+            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+            lit.text(myFile)
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+        elif outfmt == '2':
+            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+            lit.text(myFile)
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+        elif outfmt == '3':
+            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+            lit.text(myFile)
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+        elif outfmt == '4':
+            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+            lit.text(myFile)
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+        elif outfmt == '5':
+            myFile = ''.join(open('blast_output').readlines()[18:])
+            lit.text(myFile)
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.xml')
+            
+        elif outfmt == '6' or outfmt == '10':
+            lit.text('(Please choose "Tabular with comment lines" to see column headers)')
+            myFile = pd.DataFrame([(i.strip().split(',') if ',' in i else i.strip().split('\t')) for i in open('blast_output').readlines()])
+            lit.table(myFile)
+            if outfmt == '6':
+                myFile.to_csv('blast_output', sep='\t')
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.tsv')
+            elif outfmt == '10':
+                myFile.to_csv('blast_output')
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.csv')
+
+        elif outfmt == '7':
+            myFile = [i for i in open('blast_output').readlines()]
+            headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
+            data = [i.strip().split('\t') for i in myFile if '#' not in i]
             myDF = pd.DataFrame(data, columns=headers)
             del myFile, data, headers
             lit.table(myDF)
             myDF.to_csv('blast_output', sep='\t')
-        elif outfmt=='9':
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.csv')
+
+        elif outfmt == '8':
+            myFile = ''.join(open('blast_output').readlines())
+            lit.text(myFile)
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+        elif outfmt == '9':
             lit.text('Binary output cannot be displayed in browser. Please download file to view output')
-        else:
-            lit.text(''.join((open('blast_output').readlines()[18:])))
-        
-        if  outfmt=='9':
-            lit.download_button("Download output file", open('blast_output', 'rb'), file_name='BLAST_out')
-        else:
             lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
+
+        elif outfmt == '11':
+            myFile = ''.join(open('blast_output').readlines())
+            lit.text(myFile)
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.asn')
+
+        elif outfmt == '12':
+            myFile = ''.join(open('blast_output').readlines())
+            lit.text(myFile)
+            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.json')
+##        #########################################################
+##        if  outfmt=='9':
+##            lit.download_button("Download output file", open('blast_output', 'rb'), file_name='BLAST_out')
+##        else:
+##            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
+##        #########################################################
     elif submit and not query:
         lit.error("Please enter input sequence!")
 

@@ -67,7 +67,7 @@ if 'BLASTp' in tool:
             lit.text('(Please choose "Tabular with comment lines" to see column headers)')
             lit.table(pd.DataFrame([(i.strip().split(',') if ',' in i else i.strip().split('\t')) for i in open('blast_output').readlines()]))
         elif outfmt=='7':
-            lit.text(''.join((open('blast_output').readlines()[1:])))
+            lit.table(pd.DataFrame([i.strip().split('\t')) for i in open('blast_output').readlines()]))
         elif outfmt=='9':
             lit.text('Binary output cannot be displayed in browser. Please download file to view output')
         else:

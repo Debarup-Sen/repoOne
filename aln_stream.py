@@ -67,7 +67,13 @@ if 'BLASTp' in tool:
             lit.text('(Please choose "Tabular with comment lines" to see column headers)')
             lit.table(pd.DataFrame([(i.strip().split(',') if ',' in i else i.strip().split('\t')) for i in open('blast_output').readlines()]))
         elif outfmt=='7':
-            lit.table(pd.DataFrame([i.strip().split('\t') for i in open('blast_output').readlines()]))
+            myFile = [i.strip().split('\t') for i in open('blast_output').readlines()]
+            headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
+            data = [i for i in myFile if '#' not in i]
+            myDF = pd.DataFrame(data, columns=headers)
+            del myFile, data, headers
+            lit.table(myDF)
+            myDF.to_csv('blast_output', sep='\t')
         elif outfmt=='9':
             lit.text('Binary output cannot be displayed in browser. Please download file to view output')
         else:

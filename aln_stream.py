@@ -5,6 +5,8 @@ import streamlit as lit
 import subprocess as proc
 from skbio.alignment import local_pairwise_align_protein as lalign, global_pairwise_align_protein as galign
 from skbio import Protein
+import pandas as pd
+
 
 lit.set_page_config(layout='wide')
 
@@ -22,7 +24,7 @@ if 'BLASTp' in tool:
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(
         "Select an output format:",
-        ('1) Pairwise', '2) Query-anchored showing identities', 
+        ('Default', '1) Pairwise', '2) Query-anchored showing identities', 
      '3) Query-anchored no identities', '4) Flat query-anchored showing identities',
      '5) Flat query-anchored no identities', '6) BLAST XML', '7) Tabular', '8) Tabular with comment lines',
      '9) Seqalign (Text ASN.1)', '10) Seqalign (Binary ASN.1)', '11) Comma-separated values',
@@ -63,7 +65,7 @@ if 'BLASTp' in tool:
         lit.info("Your output below: [Formats 7-13 show no output when no hits are found]")
         if outfmt=='6' or outfmt=='10':
             lit.text('(Please choose "Tabular with comment lines" to see column headers)')
-            lit.text(''.join((open('blast_output').readlines())))
+            lit.table(pd.DataFrame([i.strip().split('\t') for i in open('blast_output').readlines()]))
         elif outfmt=='7':
             lit.text(''.join((open('blast_output').readlines()[1:])))
         elif outfmt=='9':

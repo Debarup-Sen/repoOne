@@ -76,7 +76,7 @@ if 'BLASTp' in tool:
 
         if outfmt == 'def':
             myFile = [i for i in open('blast_output_def2').readlines()]
-            lit.text(''.join(myFile[:4]))
+            lit.text(''.join([i for i in myFile[:8] if '#' in i and 'hits' in i))
             try:
                 headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
                 data = [i.strip().split('\t') for i in myFile if '#' not in i]

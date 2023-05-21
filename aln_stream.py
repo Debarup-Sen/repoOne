@@ -22,7 +22,7 @@ tool = lit.radio(
 
 if 'BLASTp' in tool:
     query = lit.text_area('Enter your input protein sequence (in FASTA/multi-FASTA format/plain text sequence format/AMPDB Acc. ID, e.g. AMPDB_111) here',
-                         height=6).upper()
+                         height=600).upper()
     file_query = lit.file_uploader("Or, you may upload file")#, label_visibility="collapsed")
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(

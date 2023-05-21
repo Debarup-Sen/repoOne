@@ -76,27 +76,29 @@ if 'BLASTp' in tool:
 
         if outfmt == 'def':
             myFile = [i for i in open('blast_output_def2').readlines()]
-            lit.text(''.join(myFile))
-            headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
-            data = [i.strip().split('\t') for i in myFile if '#' not in i]
-            myDF = pd.DataFrame(data, columns=headers)
-            del myFile, data, headers
-            lit.table(myDF)
-            lit.markdown('<br><br><u><b>*Alignments:*</b></u><br>', unsafe_allow_html=True)
-            myDF.to_csv('blast_output_def2', sep='\t')
+            try:
+                headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
+                data = [i.strip().split('\t') for i in myFile if '#' not in i]
+                myDF = pd.DataFrame(data, columns=headers)
+                del myFile, data, headers
+                lit.table(myDF)
+                lit.markdown('<br><br><u><b>*Alignments:*</b></u><br>', unsafe_allow_html=True)
+                myDF.to_csv('blast_output_def2', sep='\t')
 
-            output1 = ''.join(open('blast_output_def1').readlines()[18:])
-            crsr = 0
-            for i in range(len(output1)):
-                if '>' in output1[i]:
-                    crsr = i
-                    break
-            output1 = ''.join(output1[crsr:])
-            lit.text(output1)
-            open('blast_output_def1', 'w').write(output1)
+                output1 = ''.join(open('blast_output_def1').readlines()[18:])
+                crsr = 0
+                for i in range(len(output1)):
+                    if '>' in output1[i]:
+                        crsr = i
+                        break
+                output1 = ''.join(output1[crsr:])
+                lit.text(output1)
+                open('blast_output_def1', 'w').write(output1)
 
-            open('blast_output', 'w').write(open('blast_output_def2').read() +'\n\nAlignments:\n'+ open('blast_output_def1').read())
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+                open('blast_output', 'w').write(open('blast_output_def2').read() +'\n\nAlignments:\n'+ open('blast_output_def1').read())
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+             except:
+                lit.text("No hits found")
 
         elif outfmt == '0':
             myFile = ''.join([i for i in open('blast_output').readlines()[18:]])

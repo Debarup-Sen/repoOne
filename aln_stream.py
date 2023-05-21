@@ -76,7 +76,7 @@ if 'BLASTp' in tool:
 
         if outfmt == 'def':
             myFile = [i for i in open('blast_output_def2').readlines()]
-            lit.text(''join(myFile))
+            lit.text(''.join(myFile))
             headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
             data = [i.strip().split('\t') for i in myFile if '#' not in i]
             myDF = pd.DataFrame(data, columns=headers)

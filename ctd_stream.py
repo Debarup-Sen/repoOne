@@ -188,27 +188,65 @@ elif my_input and submit:
             dictC = calC(my_input)
             dictT = calT(my_input)
             dictD = calD(my_input)
-            colC, colT = lit.columns(2)
+            colC, spacerCol, colT = lit.columns([2, 1, 2])
             with colC:
                 lit.write("**Composition Descriptors**"); f.write("Composition Descriptors\n")
                 for i in dictC.keys():
-                    lit.write(i.replace('_', '')+': '+str(dictC[i])); f.write(i.replace('_', '')+': '+str(dictC[i])+'\n')
+                    f.write(i.replace('_', '')+': '+str(dictC[i])+'\n')
+
+                lit.table(
+                    pd.DataFrame(
+                        [[i.replace('_', ''), dictC[i]] for i in dictC.keys()],
+                        columns=['Descriptor', 'Value']
+                        )
+                    )
+
+            with spacerCol:
+                _ = [lit.write('\t') for i in range(20)]
+            
             with colT:
                 lit.write("**Transition Descriptors**"); f.write("Transition Descriptors\n")
                 for i in dictT.keys():
-                    lit.write(i.replace('_', '')+': '+str(dictT[i])); f.write(i.replace('_', '')+': '+str(dictT[i])+'\n')
+                    f.write(i.replace('_', '')+': '+str(dictT[i])+'\n')
+
+                lit.table(
+                    pd.DataFrame(
+                        [[i.replace('_', ''), dictT[i]] for i in dictT.keys()],
+                        columns=['Descriptor', 'Value']
+                        )
+                    )
+                
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.write("**Distribution Descriptors**"); f.write("Distribution Descriptors\n")
-            scolD1, scolD2, scolD3, scolD4 = lit.columns(4)
-            listD = [k+': '+str(dictD[k]) for k in dictD.keys()]; _ = [f.write(i.replace('_', '')+'\n') for i in listD]
+            scolD1, scolD2, scolD3 = lit.columns(3)
+            listD = [k+': '+str(dictD[k]) for k in dictD.keys()]
+            _ = [f.write(i.replace('_', '')+'\n') for i in listD]
+            
             with scolD1:
-                _ = [lit.write(i.replace('_', '')) for i in listD[:27]]
+                lit.table(
+                    pd.DataFrame(
+                        [i.replace('_', '').split(':') for i in listD[:35]],
+                        columns=['Descriptors', 'Values']
+                        )
+                    )
+                
             with scolD2:
-                _ = [lit.write(i.replace('_', '')) for i in listD[27:53]]
+                lit.table(
+                    pd.DataFrame(
+                        [i.replace('_', '').split(':') for i in listD[35:70]],
+                        columns=['Descriptors', 'Values']
+                        )
+                    )
+                
             with scolD3:
-                _ = [lit.write(i.replace('_', '')) for i in listD[53:79]]
-            with scolD4:
-                _ = [lit.write(i.replace('_', '')) for i in listD[79:]]
+                lit.table(
+                    pd.DataFrame(
+                        [i.replace('_', '').split(':') for i in listD[70:]],
+                        columns=['Descriptors', 'Values']
+                        )
+                    )
+                
+
 
 
 
@@ -224,14 +262,17 @@ elif my_input and submit:
             dcol_list = lit.columns(4)
             loop = 0
             for i in dcol_list:
+                myList = []
                 with i:
                     for j in range(loop, len(desc)):
-                        if j%19==0 and j!=0:
-                            lit.write(desc[j])
+                        if j%18==0 and j!=0:
+                            myList.append(desc[j])
                             loop = j+1
                             break
                         else:
-                            lit.write(desc[j])
+                            myList.append(desc[j])
+
+                    lit.table(pd.DataFrame([i.split(':') for i in myList], columns=['Descriptor', 'Value']))
 
 
         f.close()

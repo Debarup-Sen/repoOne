@@ -181,7 +181,8 @@ if 'BLASTp' in tool:
         lit.error("Please enter input sequence!")
 
 if 'MUSCLE' in tool:
-    multiseq = lit.text_area('Enter your input protein sequences (in FASTA format/multi-FASTA format/AMPDB Acc. ID, e.g. AMPDB_111 one in each line) here:').upper()
+    multiseq = lit.text_area('Enter your input protein sequences (in FASTA format/multi-FASTA format/AMPDB Acc. ID, e.g. AMPDB_111 one in each line) here:',
+                            height=200).upper()
     file_query = lit.file_uploader("Or, you may upload file")#, label_visibility="collapsed")
     lit.markdown('<br>', unsafe_allow_html=True)
     submit = lit.button('Submit')
@@ -219,10 +220,10 @@ if 'MUSCLE' in tool:
 
 if 'Needleman-Wunsch' in tool:
     lit.text("FASTA format, plain text sequence format supported.")
-    query = myquery = lit.text_area('Enter your query protein sequence here:').upper()
+    query = myquery = lit.text_area('Enter your query protein sequence here:', height=200).upper()
     file_query = lit.file_uploader("Or, you may upload query file")#, label_visibility="collapsed")
     lit.markdown('<br>', unsafe_allow_html=True)
-    subject = mysubject = lit.text_area('Enter your subject protein sequence here:').upper()
+    subject = mysubject = lit.text_area('Enter your subject protein sequence here:', height=200).upper()
     file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
     submit = lit.button('Submit')
     if file_query:
@@ -303,10 +304,10 @@ if 'Needleman-Wunsch' in tool:
 
 if 'Smith-Waterman' in tool:
     lit.text("FASTA format, plain text sequence format supported.")
-    query = myquery = lit.text_area('Enter your query protein sequence here').upper()
+    query = myquery = lit.text_area('Enter your query protein sequence here', height=200).upper()
     file_query = lit.file_uploader("Or, you may upload query file")#, label_visibility="collapsed")
     lit.markdown('<br>', unsafe_allow_html=True)
-    subject = mysubject = lit.text_area('Enter your subject protein sequence here').upper()
+    subject = mysubject = lit.text_area('Enter your subject protein sequence here', height=200).upper()
     file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
     submit = lit.button('Submit')
     if file_query:

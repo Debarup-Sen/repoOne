@@ -76,11 +76,11 @@ elif my_input and submit:
             f.write('Amino Acid Frequencies: \n')
             f.write('For all amino acids:\n')
             _ = [f.write(i+'\n') for i in frequencies]
-            f.write("For the amino acids present in input sequence:\n")
+            f.write("For the amino acids present in input sequence:\n")     #"{:.2f}".format(arrs[-1])
             _ = [f.write(i+'\n') for i in sfrequencie]
 
-            all_cnt_freq = [counts[i].split(':')+[frequencies[i].split(':')[1], round(float(frequencies[i].split(':')[1])*100, 3)]  for i in range(len(frequencies))]
-            nz_cnt_freq = [scount[i].split(':')+[sfrequencie[i].split(':')[1], round(float(sfrequencie[i].split(':')[1])*100, 3)]  for i in range(len(sfrequencie))]
+            all_cnt_freq = [counts[i].split(':')+[frequencies[i].split(':')[1]]+["{:.2f} %".format(float(frequencies[i].split(':')[1])*100)]  for i in range(len(frequencies))]
+            nz_cnt_freq = [scount[i].split(':')+[sfrequencie[i].split(':')[1]]+["{:.2f} %".format(float(sfrequencie[i].split(':')[1])*100)]  for i in range(len(sfrequencie))]
             
             lit.write('_Amino acid counts & frequencies_: ') 
             count_col1, count_col2 = lit.columns(2)

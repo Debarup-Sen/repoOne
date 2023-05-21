@@ -9,7 +9,7 @@ from propy.CTD import CalculateC as calC, CalculateT as calT, CalculateD as calD
 import pandas as pd
 
 lit.set_page_config(layout='wide')
-lit.title("AMPDB Sequence Alignment")
+lit.title("AMPDB Feature Calculation")
 
 lit.write('''
 # Welcome to AMPDB Protein Feature calculation toolbox!

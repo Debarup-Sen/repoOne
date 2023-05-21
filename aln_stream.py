@@ -97,7 +97,7 @@ if 'BLASTp' in tool:
 
                 open('blast_output', 'w').write(open('blast_output_def2').read() +'\n\nAlignments:\n'+ open('blast_output_def1').read())
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
-             except:
+            except:
                 lit.text("No hits found")
 
         elif outfmt == '0':

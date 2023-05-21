@@ -9,6 +9,8 @@ from propy.CTD import CalculateC as calC, CalculateT as calT, CalculateD as calD
 import pandas as pd
 
 lit.set_page_config(layout='wide')
+lit.title("AMPDB Sequence Alignment")
+
 lit.write('''
 # Welcome to AMPDB Protein Feature calculation toolbox!
 Tools to calculate composition features, physicochemical properties and CTD (Composition, Transition, Distribution) descriptors of protein.

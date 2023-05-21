@@ -18,7 +18,7 @@ lit.write("""
 
 """)
 tool = lit.radio(
-    "Select alignment option:",
+    "Select an alignment option:",
     ('BLASTp (Basic Local Alignment Search against AMPDB)', 'MUSCLE (Multiple Sequence Alignment)', 'Needleman-Wunsch (Global Pairwise Alignment)', 'Smith-Waterman (Local Pairwise Alignment)'))
 
 if 'BLASTp' in tool:

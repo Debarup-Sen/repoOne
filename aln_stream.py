@@ -6,7 +6,7 @@ import subprocess as proc
 from skbio.alignment import local_pairwise_align_protein as lalign, global_pairwise_align_protein as galign
 from skbio import Protein
 import pandas as pd
-from io import StrinIO
+from io import StringIO
 
 
 lit.set_page_config(layout='wide')

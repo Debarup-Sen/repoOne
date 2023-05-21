@@ -26,11 +26,11 @@ if 'BLASTp' in tool:
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(
         "Select an output format:",
-        ('Default', '1) Pairwise', '2) Query-anchored showing identities', 
-     '3) Query-anchored no identities', '4) Flat query-anchored showing identities',
-     '5) Flat query-anchored no identities', '6) BLAST XML', '7) Tabular', '8) Tabular with comment lines',
-     '9) Seqalign (Text ASN.1)', '10) Seqalign (Binary ASN.1)', '11) Comma-separated values',
-     '12) BLAST archive (ASN.1)', '13) Seqalign (JSON)')
+        ('Default', 'Pairwise', 'Query-anchored showing identities', 
+     'Query-anchored no identities', 'Flat query-anchored showing identities',
+     'Flat query-anchored no identities', 'BLAST XML', 'Tabular', 'Tabular with comment lines',
+     'Seqalign (Text ASN.1)', 'Seqalign (Binary ASN.1)', 'Comma-separated values',
+     'BLAST archive (ASN.1)', 'Seqalign (JSON)')
         )
     outfmt = ('0' if 'Pairwise' in outfmt
               else '1' if 'Query-anchored showing identities' in outfmt

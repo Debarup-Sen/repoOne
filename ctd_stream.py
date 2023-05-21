@@ -62,20 +62,51 @@ elif my_input and submit:
             count = pep.counts()
             counts = [k+':'+str(count[k]) for k in count.keys()]
             scount = [i for i in counts if int(i.split(':')[1]) != 0]
-            lit.write('_Amino acid counts_: '); f.write('Amino acid counts:\n')
+            
+            frequency = pep.frequencies()
+            frequencies = [k+':'+str(round(frequency[k],3)) for k in frequency.keys()]
+            sfrequencie = [i for i in frequencies if float(i.split(':')[1]) != 0.0]
+
+            f.write('Amino acid counts:\n')
+            f.write('For all amino acids:\n')
+            _ = [f.write(i+'\n') for i in counts]
+            f.write("For the amino acids present in input sequence:\n")
+            _ = [f.write(i+'\n') for i in scount]
+            
+            f.write('Amino Acid Frequencies: \n')
+            f.write('For all amino acids:\n')
+            _ = [f.write(i+'\n') for i in frequencies]
+            f.write("For the amino acids present in input sequence:\n")
+            _ = [f.write(i+'\n') for i in sfrequencie]
+
+            all_cnt_freq = [counts[i].split(':')+[frequencies[i].split(':')[1], round(float(frequencies[i].split(':')[1])*100, 3)]  for i in range(len(frequencies))]
+            nz_cnt_freq = [scount[i].split(':')+[sfrequencie[i].split(':')[1], round(float(sfrequencie[i].split(':')[1])*100, 3)]  for i in range(len(sfrequencie))]
+            
+            lit.write('_Amino acid counts & frequencies_: ') 
             count_col1, count_col2 = lit.columns(2)
             with count_col1:
-                lit.write("For all amino acids"); f.write('For all amino acids:\n')
-                _ = [f.write(i+'\n') for i in counts]
-                lit.table(pd.DataFrame([i.split(':') for i in counts], columns=['Amino Acids', 'Counts']))#[i.split(':') for i in counts[int(len(counts)/2):]]))
-
+                lit.write("For all amino acids"); 
+                lit.table(pd.DataFrame(all_cnt_freq, columns=['Amino Acids', 'Counts', 'Frequencies', 'Percentages']))#[i.split(':') for i in counts[int(len(counts)/2):]]))
             with count_col2:
-                lit.write("For the amino acids present in input sequence"); f.write("For the amino acids present in input sequence:\n")
-                _ = [f.write(i+'\n') for i in scount]
-                lit.table(pd.DataFrame([i.split(':') for i in scount], columns=['Amino Acids', 'Counts']))
+                lit.write("For the amino acids present in input sequence")
+                lit.table(pd.DataFrame(nz_cnt_freq, columns=['Amino Acids', 'Counts', 'Frequencies', 'Percentages']))
                 
             lit.markdown('''<br>''', unsafe_allow_html=True)
+
             
+            
+            
+##            lit.write('_Amino acid frequencies_: '); 
+##            count_col1, count_col2 = lit.columns(2)
+##            with count_col1:
+##                lit.write("For all amino acids")
+##                
+##                lit.table(pd.DataFrame([i.split(':') for i in counts], columns=['Amino Acids', 'Counts']))
+##            with count_col2:
+##                lit.write("For the amino acids present in input sequence")
+##                
+##                lit.table(pd.DataFrame([i.split(':') for i in scount], columns=['Amino Acids', 'Counts']))
+                
             most_common = [i+': '+str(count[i]) for i in count.keys() if count[i]==max(count.values())][0]
             least_common = [i+': '+str(count[i]) for i in count.keys() if count[i]==min([i for i in count.values() if i!=0])][0]
             not_present = ", ".join([i.split(':')[0] for i in counts if int(i.split(':')[1]) == 0])
@@ -113,23 +144,10 @@ elif my_input and submit:
 
             lit.markdown('''<br>''', unsafe_allow_html=True)
             
-            count = pep.frequencies()
-            counts = [k+':'+str(round(count[k],3)) for k in count.keys()]
-            scount = [i for i in counts if float(i.split(':')[1]) != 0.0]
-            lit.write('_Amino acid frequencies_: '); f.write('Amino Acid Frequencies: \n')
-            count_col1, count_col2 = lit.columns(2)
-            with count_col1:
-                lit.write("For all amino acids"); f.write('For all amino acids:\n')
-                _ = [f.write(i+'\n') for i in counts]
-                lit.table(pd.DataFrame([i.split(':') for i in counts], columns=['Amino Acids', 'Counts']))#[i.split(':') for i in counts[int(len(counts)/2):]]))
 
-            with count_col2:
-                lit.write("For the amino acids present in input sequence"); f.write("For the amino acids present in input sequence:\n")
-                _ = [f.write(i+'\n') for i in scount]
-                lit.table(pd.DataFrame([i.split(':') for i in scount], columns=['Amino Acids', 'Counts']))
 
             lit.markdown('''<br>''', unsafe_allow_html=True)
-            lit.write('_Secondary Structure Fraction (Helix, Turn, Sheet)_:      '+', '.join(str(round(i,3)) for i in propar.secondary_structure_fraction()));
+#            lit.write('_Secondary Structure Fraction (Helix, Turn, Sheet)_:      '+', '.join(str(round(i,3)) for i in propar.secondary_structure_fraction()));
             
 
 

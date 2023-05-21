@@ -49,7 +49,7 @@ if 'BLASTp' in tool:
               else None)
     submit = lit.button('Submit')
     if file_query:
-        query = StringIO(file_query.getvalue().decode("utf-8"))
+        query = StringIO(file_query.getvalue().decode("utf-8")).read()
     if query and len([i for i in query.split('\n') if i!=''])==1 and 'AMPDB_' in query:
         with open('master_dataset.tsv') as f:
             l = ' '
@@ -181,7 +181,7 @@ if 'MUSCLE' in tool:
     lit.markdown('<br>', unsafe_allow_html=True)
     submit = lit.button('Submit')
     if file_query:
-        multiseq = StringIO(file_query.getvalue().decode("utf-8"))
+        multiseq = StringIO(file_query.getvalue().decode("utf-8")).read()
     if multiseq and submit:
         if len([i for i in multiseq.split('\n') if i!=''])>=1 and 'AMPDB_' in multiseq:
             multiseq = [i for i in multiseq.replace(' ', '').split('\n') if i!='']
@@ -221,9 +221,9 @@ if 'Needleman-Wunsch' in tool:
     file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
     submit = lit.button('Submit')
     if file_query:
-        query = myquery = StringIO(file_query.getvalue().decode("utf-8"))
+        query = myquery = StringIO(file_query.getvalue().decode("utf-8")).read()
     if file_subject:
-        subject = mysubject = StringIO(file_subject.getvalue().decode("utf-8"))
+        subject = mysubject = StringIO(file_subject.getvalue().decode("utf-8")).read()
     if query and subject and submit:
         if '>' in query:
             query = ''.join(query.split('\n')[1:])
@@ -305,9 +305,9 @@ if 'Smith-Waterman' in tool:
     file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
     submit = lit.button('Submit')
     if file_query:
-        query = myquery = StringIO(file_query.getvalue().decode("utf-8"))
+        query = myquery = StringIO(file_query.getvalue().decode("utf-8")).read()
     if file_subject:
-        subject = mysubject = StringIO(file_subject.getvalue().decode("utf-8"))
+        subject = mysubject = StringIO(file_subject.getvalue().decode("utf-8")).read()
     if query and subject and submit:
         if '>' in query:
             query = ''.join(query.split('\n')[1:])

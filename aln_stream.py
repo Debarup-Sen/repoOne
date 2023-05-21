@@ -21,6 +21,7 @@ tool = lit.radio(
 
 if 'BLASTp' in tool:
     query = lit.text_area('Enter your input protein sequence (in FASTA or plain text sequence format/AMPDB Acc. ID, e.g. AMPDB_111) here').upper()
+    file_query = lit.file_uploader("Or, you may upload file")#, label_visibility="collapsed")
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(
         "Select an output format:",
@@ -46,6 +47,8 @@ if 'BLASTp' in tool:
               else 'def' if 'Default' in outfmt
               else None)
     submit = lit.button('Submit')
+    if file_query:
+        query = file_query
     if query and len([i for i in query.split('\n') if i!=''])==1 and 'AMPDB_' in query:
         with open('master_dataset.tsv') as f:
             l = ' '
@@ -173,8 +176,11 @@ if 'BLASTp' in tool:
 
 if 'MUSCLE' in tool:
     multiseq = lit.text_area('Enter your input sequences (in FASTA format/AMPDB Acc. ID, e.g. AMPDB_111 one in each line) here:').upper()
+    file_query = lit.file_uploader("Or, you may upload file")#, label_visibility="collapsed")
     lit.markdown('<br>', unsafe_allow_html=True)
     submit = lit.button('Submit')
+    if file_query:
+        multiseq = file_query
     if multiseq and submit:
         if len([i for i in multiseq.split('\n') if i!=''])>=1 and 'AMPDB_' in multiseq:
             multiseq = [i for i in multiseq.replace(' ', '').split('\n') if i!='']
@@ -208,8 +214,15 @@ if 'MUSCLE' in tool:
 if 'Needleman-Wunsch' in tool:
     lit.text("FASTA format, plain text sequence format supported.")
     query = myquery = lit.text_area('Enter your query sequence here:').upper()
+    file_query = lit.file_uploader("Or, you may upload query file")#, label_visibility="collapsed")
+    lit.markdown('<br>', unsafe_allow_html=True)
     subject = mysubject = lit.text_area('Enter your subject sequence here:').upper()
+    file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
     submit = lit.button('Submit')
+    if file_query:
+        query = myquery = file_query
+    if file_subject:
+        subject = mysubject = file_subject
     if query and subject and submit:
         if '>' in query:
             query = ''.join(query.split('\n')[1:])
@@ -285,8 +298,15 @@ if 'Needleman-Wunsch' in tool:
 if 'Smith-Waterman' in tool:
     lit.text("FASTA format, plain text sequence format supported.")
     query = myquery = lit.text_area('Enter your query sequence here').upper()
+    file_query = lit.file_uploader("Or, you may upload query file")#, label_visibility="collapsed")
+    lit.markdown('<br>', unsafe_allow_html=True)
     subject = mysubject = lit.text_area('Enter your subject sequence here').upper()
+    file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
     submit = lit.button('Submit')
+    if file_query:
+        query = myquery = file_query
+    if file_subject:
+        subject = mysubject = file_subject
     if query and subject and submit:
         if '>' in query:
             query = ''.join(query.split('\n')[1:])

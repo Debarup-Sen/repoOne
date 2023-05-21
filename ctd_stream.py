@@ -6,6 +6,7 @@ import streamlit as lit
 from peptides import Peptide as pept
 import Bio.SeqUtils.ProtParam as proparm
 from propy.CTD import CalculateC as calC, CalculateT as calT, CalculateD as calD
+import pandas as pd
 
 lit.set_page_config(layout='wide')
 lit.write('''
@@ -48,7 +49,7 @@ elif my_input and submit:
                         break
                     j = i.split('\t')
                     if my_input in j[1]:
-                        my_input = j[6]
+                        my_input = j[3]
                         break
 
         lit.markdown('''<br>''', unsafe_allow_html=True)
@@ -59,98 +60,130 @@ elif my_input and submit:
             pep = pept(my_input)
             propar = proparm.ProteinAnalysis(my_input)
             count = pep.counts()
-            counts = ['**'+k+'**:  '+str(count[k]) for k in count.keys()]
-            scount = [i for i in counts if '0' not in i]
+            counts = [k+':'+str(count[k]) for k in count.keys()]
+            scount = [i for i in counts if int(i.split(':')[1]) != 0]
             lit.write('_Amino acid counts_: '); f.write('Amino acid counts:\n')
             count_col1, count_col2 = lit.columns(2)
             with count_col1:
                 lit.write("For all amino acids"); f.write('For all amino acids:\n')
                 _ = [f.write(i+'\n') for i in counts]
-                scol1, scol2 = lit.columns(2)
-                with scol1:
-                    _ = [lit.write(i) for i in counts[:int(len(counts)/2)]]
-                with scol2:
-                    _ = [lit.write(i) for i in counts[int(len(counts)/2):]]
+                lit.table(pd.DataFrame([i.split(':') for i in counts], columns=['Amino Acids', 'Counts']))#[i.split(':') for i in counts[int(len(counts)/2):]]))
 
             with count_col2:
                 lit.write("For the amino acids present in input sequence"); f.write("For the amino acids present in input sequence:\n")
                 _ = [f.write(i+'\n') for i in scount]
-                scol3, scol4 = lit.columns(2)
-                with scol3:
-                    _ = [lit.write(i) for i in scount[:int(len(scount)/2)]]
-                with scol4:
-                    _ = [lit.write(i) for i in scount[int(len(scount)/2):]]
+                lit.table(pd.DataFrame([i.split(':') for i in scount], columns=['Amino Acids', 'Counts']))
+                
             lit.markdown('''<br>''', unsafe_allow_html=True)
+            
             most_common = [i+': '+str(count[i]) for i in count.keys() if count[i]==max(count.values())][0]
             least_common = [i+': '+str(count[i]) for i in count.keys() if count[i]==min([i for i in count.values() if i!=0])][0]
-            not_present = ", ".join([i[2] for i in counts if '0' in i])
+            not_present = ", ".join([i.split(':')[0] for i in counts if int(i.split(':')[1]) == 0])
             phiAA = str(sum([count[i] for i in count.keys() if i in list('RNDCQEHKSTY')]))
             phoAA = str(sum([count[i] for i in count.keys() if i in list('GAMLIVFWP')]))
             basicAA = str(sum([count[i] for i in count.keys() if i in list('HRK')]))
             acidicAA = str(sum([count[i] for i in count.keys() if i in list('DE')]))
-            lit.write("Most common residue: "+most_common); f.write('Most Common Residue: '+most_common+'\n')
-            lit.write("Least common residue: "+least_common); f.write('Least Common Residue: '+least_common+'\n')
-            lit.write("Residues not present in the sequence: "+not_present); f.write('Residues not present in the sequence: '+not_present+'\n')
-            lit.write("No. of Hydrophilic residues: "+phiAA); f.write("No. of Hydrophilic residues: "+phiAA+'\n')
-            lit.write("No. of Hydrophobic residues: "+phoAA); f.write("No. of Hydrophobic residues: "+phoAA+'\n')
-            lit.write("No. of Basic residues: "+basicAA); f.write("No. of Basic residues: "+basicAA+'\n')
-            lit.write("No. of Acidic residues: "+acidicAA); f.write("No. of Acidic residues: "+acidicAA+'\n')
+            sec_str_frac =  ', '.join(str(round(i,3)) for i in propar.secondary_structure_fraction())
+            f.write('Most Common Residue: '+most_common+'\n')
+            f.write('Least Common Residue: '+least_common+'\n')
+            f.write('Residues not present in the sequence: '+not_present+'\n')
+            f.write("No. of Hydrophilic residues: "+phiAA+'\n')
+            f.write("No. of Hydrophobic residues: "+phoAA+'\n')
+            f.write("No. of Basic residues: "+basicAA+'\n')
+            f.write("No. of Acidic residues: "+acidicAA+'\n')
+            f.write('Secondary Structure Fraction (Helix, Turn, Sheet): '+sec_str_frac+'\n')
+
+            lit.write('Protein Basic Information Table: ');
+            lit.table(
+                pd.DataFrame(
+                    [
+                        ["Most common residue:", most_common],
+                        ["Least common residue:", least_common],
+                        ["Residues not present in the sequence:", not_present],
+                        ["No. of Hydrophilic residues:", phiAA],
+                        ["No. of Hydrophobic residues:", phoAA],
+                        ["No. of Basic residues:", basicAA],
+                        ["No. of Acidic residues:", acidicAA],
+                        ["Secondary Structure Fraction (Helix, Turn, Sheet):", sec_str_frac]
+                    ],
+                    
+                    columns=['Data', 'Values']
+                )
+            )
 
             lit.markdown('''<br>''', unsafe_allow_html=True)
             
             count = pep.frequencies()
-            counts = ['**'+k+'**:  '+str(round(count[k],3)) for k in count.keys()]
-            scount = [i for i in counts if '0.0' != i[-3:]]
+            counts = [k+':'+str(round(count[k],3)) for k in count.keys()]
+            scount = [i for i in counts if float(i.split(':')[1]) != 0.0]
             lit.write('_Amino acid frequencies_: '); f.write('Amino Acid Frequencies: \n')
             count_col1, count_col2 = lit.columns(2)
             with count_col1:
-                lit.write("For all amino acids"); f.write("For all amino acids:\n")
+                lit.write("For all amino acids"); f.write('For all amino acids:\n')
                 _ = [f.write(i+'\n') for i in counts]
-                scol1, scol2 = lit.columns(2)
-                with scol1:
-                    _ = [lit.write(i) for i in counts[:int(len(counts)/2)]]
-                with scol2:
-                    _ = [lit.write(i) for i in counts[int(len(counts)/2):]]
+                lit.table(pd.DataFrame([i.split(':') for i in counts], columns=['Amino Acids', 'Counts']))#[i.split(':') for i in counts[int(len(counts)/2):]]))
 
             with count_col2:
                 lit.write("For the amino acids present in input sequence"); f.write("For the amino acids present in input sequence:\n")
                 _ = [f.write(i+'\n') for i in scount]
-                scol3, scol4 = lit.columns(2)
-                with scol3:
-                    _ = [lit.write(i) for i in scount[:int(len(count)/2)]]
-                with scol4:
-                    _ = [lit.write(i) for i in scount[int(len(count)/2):]]
+                lit.table(pd.DataFrame([i.split(':') for i in scount], columns=['Amino Acids', 'Counts']))
 
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.write('_Secondary Structure Fraction (Helix, Turn, Sheet)_:      '+', '.join(str(round(i,3)) for i in propar.secondary_structure_fraction()));
-            f.write('Secondary Structure Fraction (Helix, Turn, Sheet): '+', '.join(str(round(i,3)) for i in propar.secondary_structure_fraction())+'\n')
+            
 
 
-        lit.markdown('''<br>''', unsafe_allow_html=True)
-        lit.markdown('''<br>''', unsafe_allow_html=True)
+
         if my_input and physicochemical:
+
+            lit.markdown('''<br>''', unsafe_allow_html=True)
+            lit.markdown('''<br>''', unsafe_allow_html=True)
+        
             lit.subheader('_Physicochemical Features_: '); f.write('\n-->Physicochemical Properties:\n')
             pep = pept(my_input)
             propar = proparm.ProteinAnalysis(my_input)
             #Peptide feature calculation
-            lit.write('Aliphatic Index: '+str(pep.aliphatic_index())); f.write('Aliphatic Index: '+str(pep.aliphatic_index())+'\n')
-            lit.write('Instability Index: '+str(pep.instability_index())); f.write('Instability Index: '+str(pep.instability_index())+'\n')
-            lit.write('Hydrophobicity: '+str(pep.hydrophobicity())); f.write('Hydrophobicity: '+str(pep.hydrophobicity())+'\n')
-            lit.write('Hydrophobic Moment: '+str(pep.hydrophobic_moment())); f.write('Hydrophobic Moment: '+str(pep.hydrophobic_moment())+'\n')
-            lit.write('Isoelectric Point: '+str(pep.isoelectric_point())); f.write('Isoelectric Point: '+str(pep.isoelectric_point())+'\n')
-            lit.write('Molecular Weight: '+str(pep.molecular_weight())); f.write('Molecular Weight: '+str(pep.molecular_weight())+'\n')
-            lit.write('Charge (at pH 7): '+str(pep.charge())); f.write('Charge (at pH 7): '+str(pep.charge())+'\n')
-            lit.write('Aromaticity: '+str(propar.aromaticity())); f.write('Aromaticity: '+str(propar.aromaticity())+'\n')
-            lit.write('Molar Extinction Coefficient (Cysteine|Cystine):   '+str(propar.molar_extinction_coefficient()).replace('(','').replace(')',''));
+            f.write('Aliphatic Index: '+str(pep.aliphatic_index())+'\n')
+            f.write('Instability Index: '+str(pep.instability_index())+'\n')
+            f.write('Hydrophobicity: '+str(pep.hydrophobicity())+'\n')
+            f.write('Hydrophobic Moment: '+str(pep.hydrophobic_moment())+'\n')
+            f.write('Isoelectric Point: '+str(pep.isoelectric_point())+'\n')
+            f.write('Molecular Weight: '+str(pep.molecular_weight())+'\n')
+            f.write('Charge (at pH 7): '+str(pep.charge())+'\n')
+            f.write('Aromaticity: '+str(propar.aromaticity())+'\n')
             f.write('Molar Extinction Coefficient (Cysteine|Cystine):   '+str(propar.molar_extinction_coefficient()).replace('(','').replace(')','')+'\n')
             try:
-                lit.write('Flexibility: '+str(propar.flexibility())); f.write('Flexibility: '+str(propar.flexibility())+'\n')
+                flexibility = ['Flexibility: ', '\n'.join([str(i) for i in propar.flexibility()])]; f.write('Flexibility: '+str(propar.flexibility())+'\n')
             except:
-                lit.write('Flexibility: Cannot be computed for peptide with non-standard amino acid residues'); f.write('Flexibility: Cannot be computed for peptide with non-standard amino acid residues\n')
+                flexibility = ['Flexibility: ','Cannot be computed for peptide with non-standard amino acid residues']; f.write('Flexibility: Cannot be computed for peptide with non-standard amino acid residues\n')
 
-        lit.markdown('''<br>''', unsafe_allow_html=True)
-        lit.markdown('''<br>''', unsafe_allow_html=True)
+            lit.table(
+                pd.DataFrame(
+                    [
+                        ['Aliphatic Index:', str(pep.aliphatic_index())],
+                        ['Instability Index: ', str(pep.instability_index())],
+                        ['Hydrophobicity: ', str(pep.hydrophobicity())],
+                        ['Hydrophobic Moment: ', str(pep.hydrophobic_moment())],
+                        ['Isoelectric Point: ', str(pep.isoelectric_point())],
+                        ['Molecular Weight: ', str(pep.molecular_weight())],
+                        ['Charge (at pH 7): ', str(pep.charge())],
+                        ['Aromaticity: ', str(propar.aromaticity())],
+                        ['Molar Extinction Coefficient (Cysteine|Cystine):   ', str(propar.molar_extinction_coefficient()).replace('(','').replace(')','')],
+                        flexibility
+                    ],
+                    
+                    columns=['Data', 'Values']
+                )
+            )
+            
+            
+
+        
         if my_input and ctddescriptors:
+
+            lit.markdown('''<br>''', unsafe_allow_html=True)
+            lit.markdown('''<br>''', unsafe_allow_html=True)
+
             lit.subheader('_CTD Descriptors_: '); f.write('\n-->CTD Descriptors: \n')
             dictC = calC(my_input)
             dictT = calT(my_input)
@@ -177,9 +210,13 @@ elif my_input and submit:
             with scolD4:
                 _ = [lit.write(i.replace('_', '')) for i in listD[79:]]
 
-        lit.markdown('''<br>''', unsafe_allow_html=True)
-        lit.markdown('''<br>''', unsafe_allow_html=True)
+
+
         if my_input and others:
+
+            lit.markdown('''<br>''', unsafe_allow_html=True)
+            lit.markdown('''<br>''', unsafe_allow_html=True)
+        
             lit.subheader('_Other Descriptors_: '); f.write('\n-->Other Descriptors: \n')
             pep = pept(my_input)
             dict1 = pep.descriptors()
@@ -195,6 +232,8 @@ elif my_input and submit:
                             break
                         else:
                             lit.write(desc[j])
+
+
         f.close()
         lit.markdown('''<br>''', unsafe_allow_html=True)
         lit.markdown('''<br>''', unsafe_allow_html=True)

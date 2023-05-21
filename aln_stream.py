@@ -10,6 +10,7 @@ from io import StringIO
 
 
 lit.set_page_config(layout='wide')
+lit.title("AMPDB Sequence Alignment")
 
 lit.write("""
 # Welcome to the AMPDB Sequence Alignment Toolbox!

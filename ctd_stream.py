@@ -108,8 +108,8 @@ elif my_input and submit:
 ##                
 ##                lit.table(pd.DataFrame([i.split(':') for i in scount], columns=['Amino Acids', 'Counts']))
                 
-            most_common = [i+': '+str(count[i]) for i in count.keys() if count[i]==max(count.values())][0]
-            least_common = [i+': '+str(count[i]) for i in count.keys() if count[i]==min([i for i in count.values() if i!=0])][0]
+            most_common = ', '.join([i+': '+str(count[i]) for i in count.keys() if count[i]==max(count.values())])
+            least_common = ', '.join([i+': '+str(count[i]) for i in count.keys() if count[i]==min([i for i in count.values() if i!=0])])
             not_present = ", ".join([i.split(':')[0] for i in counts if int(i.split(':')[1]) == 0])
             phiAA = str(sum([count[i] for i in count.keys() if i in list('RNDCQEHKSTY')]))
             phoAA = str(sum([count[i] for i in count.keys() if i in list('GAMLIVFWP')]))

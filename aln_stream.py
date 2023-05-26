@@ -48,6 +48,41 @@ if 'BLASTp' in tool:
               else '12' if 'Seqalign (JSON)' in outfmt
               else 'def' if 'Default' in outfmt
               else None)
+
+
+    lit.text('Customization parameters & choices:')
+    command = 'blastp -query blast_input.txt -db ampdb '
+    task = lit.radio("Type of task:", ('blastp', 'blastp-fast', 'blastp-short'))
+    if task: command += '-task '+task
+    evalue = lit.text_input("Please enter e-value:")
+    if evalue: command += ' -evalue '+evalue
+    word_size = lit.text_input("Please enter word size:")
+    if word_size: command += ' -word_size '+word_size
+    gapopen = lit.text_input("Please enter gap opening penalty:")
+    if gapopen:  command += ' -gapopen '+gapopen
+    gapextend = lit.text_input("Please enter gap extension penalty:")
+    if gapextend:  command += ' -gapextend '+gapextend
+    matrix = lit.selectbox(
+        "Please select the matrix:",
+        ('',
+         'BLOSUM45', 'BLOSUM50', 'BLOSUM62', 'BLOSUM80', 'BLOSUM90',
+         'PAM30', 'PAM70', 'PAM250',
+         'IDENTITY')
+        )
+    if matrix: command += ' -matrix '+matrix
+    threshold = lit.text_input("Please enter minimum word score:")
+    if threshold: command += '- threshold '+threshold
+    num_alignments = lit.text_input("Please enter number of database sequences to show alignment for (Default 250):")
+    if num_alignments: command += ' -num_alignments '+num_alignments
+    qcov_hsp_perc = lit.text_input("Please enter percent query coverage per HSP:")
+    if qcov_hsp_perc: command += ' -qcov_hsp_perc '+qcov_hsp_perc
+    max_target_seqs = lit.text_input("Please enter maximum number of query to keep:")
+    if max_target_seqs: command += ' -max_target_seqs '+max_target_seqs
+
+    
+
+
+
     submit = lit.button('Submit')
     if file_query:
         query = StringIO(file_query.getvalue().decode("utf-8")).read().upper()
@@ -65,13 +100,14 @@ if 'BLASTp' in tool:
                     query = '>'+query+'\n'+j[3]
                     break                
     if query and submit:
+        command
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
         open('blast_input.txt', 'w').write(query)
         if outfmt == 'def':
-            proc.run(('blastp -query blast_input.txt -db ampdb -out blast_output_def1 -outfmt 0').split())
-            proc.run(('blastp -query blast_input.txt -db ampdb -out blast_output_def2 -outfmt 7').split())
+            proc.run((command+' -out blast_output_def1 -outfmt 0').split())
+            proc.run((command+' -out blast_output_def2 -outfmt 7').split())
         else:
-            proc.run(('blastp -query blast_input.txt -db ampdb -out blast_output -outfmt '+outfmt).split())
+            proc.run((command+' -out blast_output -outfmt '+outfmt).split())
             
         lit.info("Your output below: [Formats 7-13 show no output when no hits are found]")
 
@@ -103,6 +139,7 @@ if 'BLASTp' in tool:
                 lit.text("No hits found")
 
         elif outfmt == '0':
+            print(''.join([i for i in open('blast_output').readlines()[:20]]))
             myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
             lit.text(myFile)
             lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')

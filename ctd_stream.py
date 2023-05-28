@@ -25,7 +25,7 @@ with col1:
     physicochemical = lit.checkbox('Physicochemical Properties')
 with col2:
     ctddescriptors = lit.checkbox('CTD Descriptors')
-    others = lit.checkbox('Other Descriptors')
+    others = lit.checkbox('QSAR Descriptors')
 submit = lit.button('Submit')
 
 if submit:
@@ -274,7 +274,7 @@ elif my_input and submit:
             lit.markdown('''<br>''', unsafe_allow_html=True)
             lit.markdown('''<br>''', unsafe_allow_html=True)
         
-            lit.subheader('_Other Descriptors_: '); f.write('\n-->Other Descriptors: \n')
+            lit.subheader('_QSAR Descriptors_: '); f.write('\n-->QSAR Descriptors: \n')
             pep = pept(my_input)
             dict1 = pep.descriptors()
             desc = [k+': '+str(dict1[k]) for k in dict1.keys()]; _ = [f.write(k+': '+str(dict1[k])+'\n') for k in dict1.keys()]

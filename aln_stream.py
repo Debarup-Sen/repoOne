@@ -71,7 +71,7 @@ if 'BLASTp' in tool:
         )
     if matrix: command += ' -matrix '+matrix
     threshold = lit.text_input("Please enter minimum word score:")
-    if threshold: command += '- threshold '+threshold
+    if threshold: command += '-threshold '+threshold
     num_alignments = lit.text_input("Please enter number of database sequences to show alignment for (Default 250):")
     if num_alignments: command += ' -num_alignments '+num_alignments
     qcov_hsp_perc = lit.text_input("Please enter percent query coverage per HSP:")
@@ -104,7 +104,7 @@ if 'BLASTp' in tool:
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
         open('blast_input.txt', 'w').write(query)
         if outfmt == 'def':
-            proc.run((command+' -out blast_output_def1 -outfmt 0').split())
+            proc.Popen((command+' -out blast_output_def1 -outfmt 0').split())
             proc.run((command+' -out blast_output_def2 -outfmt 7').split())
         else:
             proc.run((command+' -out blast_output -outfmt '+outfmt).split())
@@ -139,7 +139,6 @@ if 'BLASTp' in tool:
                 lit.text("No hits found")
 
         elif outfmt == '0':
-            print(''.join([i for i in open('blast_output').readlines()[:20]]))
             myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
             lit.text(myFile)
             lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
@@ -222,13 +221,46 @@ if 'MUSCLE' in tool:
                             height=200).upper()
     file_query = lit.file_uploader("Or, you may upload file")#, label_visibility="collapsed")
     lit.markdown('<br>', unsafe_allow_html=True)
+    
+    command = 'wsl muscle -in muscle_input.txt -out muscle_output '
+    
+    muscol1, muscol2 = lit.columns(2)
+    with muscol1:
+        maxiters = lit.text_input("Please enter maximum number of iterations:")
+        if maxiters: command += ' -maxiters '+maxiters
+        maxhours = lit.text_input("Please enter Maximum time to iterate in hours:")
+        if maxhours: command += ' -maxhours '+maxhours
+    with muscol2:
+        outfmt = lit.radio(
+                "Select an output format:",
+                ('Default (FASTA)', 'HTML', 'GCG MSF', 
+             'CLUSTALW', 'CLUSTALW with header'),
+                horizontal = True)
+        outfmt = ('-html ' if 'HTML' in outfmt
+                  else '-msf ' if 'MSF' in outfmt
+                  else '-clw ' if 'CLUSTALW' in outfmt
+                  else '-clwstrict ' if 'header' in outfmt
+                  else None)
+        if outfmt:  command += outfmt
+
+        smcol1, smcol2 = lit.columns(2)
+        with smcol1:
+            diags = lit.checkbox('Find diagonals?')
+            if diags: command += ' -diags '
+            stable = lit.checkbox('Output results in input order?')
+            if stable: command += ' -stable '
+        with smcol2:
+            group = lit.checkbox('Group sequences by similarity?')
+            if group: command += ' -group '
+
+
     submit = lit.button('Submit')
     if file_query:
         multiseq = StringIO(file_query.getvalue().decode("utf-8")).read().upper()
     if multiseq and submit:
         if len([i for i in multiseq.split('\n') if i!=''])>=1 and 'AMPDB_' in multiseq:
             multiseq = [i for i in multiseq.replace(' ', '').split('\n') if i!='']
-            with open('master_dataset.tsv') as f, open(r'mafft_input.txt', 'w') as g:
+            with open('master_dataset.tsv') as f, open(r'muscle_input.txt', 'w') as g:
                 for k in multiseq:
                     f.seek(0,0)
                     l = ' '
@@ -243,14 +275,14 @@ if 'MUSCLE' in tool:
                             g.write('>'+k+'\n'+j[3]+'\n')
                             break
         else:
-            open('mafft_input.txt', 'w').write(multiseq)
+            open('muscle_input.txt', 'w').write(multiseq)
     
     if multiseq and submit:
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
-        proc.run('muscle -in mafft_input.txt -out mafft_output'.split())
+        proc.run((command+'').split())
         lit.info("Your output below (In case you do not see any output, please re-check your input for invalid characters or non-standard residues):")
-        lit.text(open(r'mafft_output').read())
-        lit.download_button("Download output file", open('mafft_output'), file_name='MAFFT_out')
+        lit.text(open(r'muscle_output').read())
+        lit.download_button("Download output file", open('muscle_output'), file_name='MUSCLE_out.txt')
     elif submit and not multiseq:
         lit.error("Please enter input sequence!")
 

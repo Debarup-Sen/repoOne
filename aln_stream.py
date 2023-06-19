@@ -41,7 +41,7 @@ if 'BLASTp' in tool:
               else '3' if 'Flat query-anchored showing identities' in outfmt
               else '4' if 'Flat query-anchored no identities' in outfmt
               else '5' if 'BLAST XML' in outfmt
-              else '6' if outfmt=='7) Tabular'
+              else '6' if outfmt=='Tabular'
               else '7' if 'Tabular with comment lines' in outfmt
               else '8' if 'Seqalign (Text ASN.1)' in outfmt
               else '9' if 'Seqalign (Binary ASN.1)' in outfmt
@@ -81,6 +81,7 @@ if 'BLASTp' in tool:
     max_target_seqs = lit.text_input("Please enter maximum number of query to keep:")
     if max_target_seqs: command += ' -max_target_seqs '+max_target_seqs
 
+
     selections = lit.multiselect(
         "Please select datasets against which to perform BLASTp (default: All):",
         ['Acyltransferase', 'Amphibian defense peptide', 'Anti-biofilm', 'Anti-cancer', 'Anti-candida',
@@ -110,8 +111,9 @@ if 'BLASTp' in tool:
         
         if file_query:
             query = StringIO(file_query.getvalue().decode("utf-8")).read().upper()
+            
 
-        if query and 'AMPDB' in query:
+        if query and 'AMPDB' in query and '>' not in query:
             check = [i for i in query.split('\n') if i!= '']
             for i in check:
                 if '_' not in i and i.isalnum():
@@ -119,12 +121,12 @@ if 'BLASTp' in tool:
                     query = None
                     break
 
-        elif 'AMPDB' not in query and query.isalnum():
+        elif 'AMPDB' not in query and '>' not in query and query.isalnum():
             lit.info('Please re-check your input for invalid characters')
             query =None
         
             
-        if query and 'AMPDB_' in query:
+        if query and 'AMPDB_' in query and '>' not in query:
             query = [i for i in query.replace(' ', '').split('\n') if i!='']
             with open('master_dataset.tsv') as f, open('blast_input.txt', 'w') as g:
                 for k in query:
@@ -144,10 +146,9 @@ if 'BLASTp' in tool:
             open('blast_input.txt', 'w').write(query)
 
         if query:
-
             if len(selections) != 0:
-                command += ' -db new_dataset'
-                with open('new_dataset', 'w') as new_dataset:
+                command += ' -db user_database'
+                with open('user_database', 'w') as new_dataset:
                     for row in open('master_dataset.tsv').readlines():
                             for dataset in selections:
                                 if dataset + ';' in row:
@@ -156,8 +157,9 @@ if 'BLASTp' in tool:
                                     seq = cells[3]
                                     new_dataset.write('>'+acc+'\n'+seq+'\n')
                                     break
-                                
-                proc.run("makeblastdb -in new_dataset -dbtype prot -title new_database".split())
+
+                                    
+                proc.run(("makeblastdb -in user_database -dbtype prot -title user_database").split())
             else:
                 command += ' -db ampdb'
 
@@ -166,8 +168,26 @@ if 'BLASTp' in tool:
                 proc.run((command+' -out blast_output_def2 -outfmt 7').split())
             else:
                 proc.run((command+' -out blast_output -outfmt '+outfmt).split())
-            
+
+##            if new_database:
+##                import os
+##                os.unlink('user_database')
+##                os.unlink('user_database'+".pdb")
+##                os.unlink('user_database'+".phr")
+##                os.unlink('user_database'+".pin")
+##                os.unlink('user_database'+".pjs")
+##                os.unlink('user_database'+".pot")
+##                os.unlink('user_database'+".psq")
+##                os.unlink('user_database'+".ptf")
+##                os.unlink('user_database'+".pto")
+##                
+                
             lit.info("Your output below: [Formats 7-13 show no output when no hits are found]")
+
+            if selections:
+                user_db = ('User selected databases: ' + ', '.join(selections) + '\n')
+            else:
+                user_db = 'User selected databases: AMPDB\n'
 
 
             if outfmt == 'def':
@@ -192,39 +212,53 @@ if 'BLASTp' in tool:
                     lit.text(output1)
                     open('blast_output_def1', 'w').write(output1)
 
-                    open('blast_output', 'w').write(open('blast_output_def2').read() +'\n\nAlignments:\n'+ open('blast_output_def1').read())
+                    open('blast_output', 'w').write(open('blast_output_def2').read().replace('user_database', user_db)
+                                                    +'\n\nAlignments:\n'+
+                                                    open('blast_output_def1').read())
                     lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
                 except:
                     lit.text("No hits found")
 
             elif outfmt == '0':
                 myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-                lit.text(myFile)
+                lit.text(myFile.replace('user_database', user_db))
+                myFile = open('blast_output').read().replace('user_database', user_db)
+                open('blast_output', 'w').write(myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
 
             elif outfmt == '1':
                 myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-                lit.text(myFile)
+                lit.text(myFile.replace('user_database', user_db))
+                myFile = open('blast_output').read().replace('user_database', user_db)
+                open('blast_output', 'w').write(myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
 
             elif outfmt == '2':
                 myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-                lit.text(myFile)
+                lit.text(myFile.replace('user_database', user_db))
+                myFile = open('blast_output').read().replace('user_database', user_db)
+                open('blast_output', 'w').write(myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
 
             elif outfmt == '3':
                 myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-                lit.text(myFile)
+                lit.text(myFile.replace('user_database', user_db))
+                myFile = open('blast_output').read().replace('user_database', user_db)
+                open('blast_output', 'w').write(myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
 
             elif outfmt == '4':
                 myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-                lit.text(myFile)
+                lit.text(myFile.replace('user_database', user_db))
+                myFile = open('blast_output').read().replace('user_database', user_db)
+                open('blast_output', 'w').write(myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
 
             elif outfmt == '5':
-                myFile = ''.join(open('blast_output').readlines()[18:])
-                lit.text(myFile)
+                myFile = ''.join(open('blast_output').readlines())
+                lit.text(myFile.replace('user_database', user_db))
+                myFile = open('blast_output').read().replace('user_database', user_db)
+                open('blast_output', 'w').write(myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.xml')
                 
             elif outfmt == '6' or outfmt == '10':
@@ -233,9 +267,13 @@ if 'BLASTp' in tool:
                 lit.table(myFile)
                 if outfmt == '6':
                     myFile.to_csv('blast_output', sep='\t')
+                    myFile = open('blast_output').read()
+                    open('blast_output', 'w').write(user_db + myFile)
                     lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.tsv')
                 elif outfmt == '10':
                     myFile.to_csv('blast_output')
+                    myFile = open('blast_output').read()
+                    open('blast_output', 'w').write(user_db + myFile)
                     lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.csv')
 
             elif outfmt == '7':
@@ -246,25 +284,35 @@ if 'BLASTp' in tool:
                 del myFile, data, headers
                 lit.table(myDF)
                 myDF.to_csv('blast_output', sep='\t')
+                myFile = open('blast_output').read()
+                open('blast_output', 'w').write(user_db + myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.csv')
 
             elif outfmt == '8':
                 myFile = ''.join(open('blast_output').readlines())
-                lit.text(myFile)
+                lit.text(myFile.replace('user_database', user_db))
+                myFile = open('blast_output').read().replace('user_database', user_db)
+                open('blast_output', 'w').write(myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
 
             elif outfmt == '9':
                 lit.text('Binary output cannot be displayed in browser. Please download file to view output')
+##                myFile = open('blast_output', 'rb').read()
+##                open('blast_output', 'wb').write(user_db + myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
 
             elif outfmt == '11':
                 myFile = ''.join(open('blast_output').readlines())
-                lit.text(myFile)
+                lit.text(myFile.replace('user_database', user_db))
+                myFile = open('blast_output').read().replace('user_database', user_db)
+                open('blast_output', 'w').write(myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.asn')
 
             elif outfmt == '12':
                 myFile = ''.join(open('blast_output').readlines())
-                lit.text(myFile)
+                lit.text(myFile.replace('user_database', user_db))
+                myFile = open('blast_output').read().replace('user_database', user_db)
+                open('blast_output', 'w').write(myFile)
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.json')
     ##        #########################################################
     ##        if  outfmt=='9':

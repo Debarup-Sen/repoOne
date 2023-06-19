@@ -18,11 +18,13 @@ lit.write("""
 """)
 tool = lit.radio(
     "Select an alignment option:",
-    ('BLASTp (Basic Local Alignment Search against AMPDB)', 'MUSCLE (Multiple Sequence Alignment)', 'Needleman-Wunsch (Global Pairwise Alignment)', 'Smith-Waterman (Local Pairwise Alignment)'))
+    ('BLASTp (Basic Local Alignment Search against AMPDB)', 'MUSCLE (Multiple Sequence Alignment)',
+     'Needleman-Wunsch (Global Pairwise Alignment)', 'Smith-Waterman (Local Pairwise Alignment)'))
 
 if 'BLASTp' in tool:
     query = lit.text_area('Enter your input protein sequence (in FASTA/multi-FASTA format/plain text sequence format/AMPDB Acc. ID, e.g. AMPDB_111) here',
-                         height=200).upper()
+                          height=200).upper()
+    query = query.replace(' ', '')
     file_query = lit.file_uploader("Or, you may upload file")#, label_visibility="collapsed")
     lit.markdown('<br>', unsafe_allow_html=True)
     outfmt = lit.radio(
@@ -51,7 +53,7 @@ if 'BLASTp' in tool:
 
 
     lit.text('Customization parameters & choices:')
-    command = 'blastp -query blast_input.txt -db ampdb '
+    command = 'blastp -query blast_input.txt '
     task = lit.radio("Type of task:", ('blastp', 'blastp-fast', 'blastp-short'))
     if task: command += '-task '+task
     evalue = lit.text_input("Please enter e-value:")
@@ -79,140 +81,197 @@ if 'BLASTp' in tool:
     max_target_seqs = lit.text_input("Please enter maximum number of query to keep:")
     if max_target_seqs: command += ' -max_target_seqs '+max_target_seqs
 
-    
+    selections = lit.multiselect(
+        "Please select datasets against which to perform BLASTp (default: All):",
+        ['Acyltransferase', 'Amphibian defense peptide', 'Anti-biofilm', 'Anti-cancer', 'Anti-candida',
+         'Anti-gram-negative', 'Anti-gram-positive', 'Anti-hepatities', 'Anti-HIV', 'Anti-HSV',
+         'Anti-inflammatory', 'Anti-listeria', 'Anti-malarial', 'Anti-mollicute', 'Anti-MRSA',
+         'Anti-parasititic', 'Anti-plasmodium', 'Anti-protozoal', 'Anti-tuberculosis', 'Anti-uterotonic',
+         'Anti-yeast', 'Antibiotic', 'Antimicrobial', 'Antinociceptive', 'Antioxidant', 'Antiviral protein',
+         'Aspartyl esterase', 'Autophagy', 'Bacteriocin', 'Bacteriolytic enzyme', 'Blood coagulation cascade inhibiting toxin',
+         'Carboxypeptidase', 'Cell membrane', 'Chemotaxis', 'Cytokine', 'Cytolysis', 'Cytolytic', 'Cytotoxin', 'Defensin',
+         'DNA replication inhibitor', 'DNA-directed RNA polymerase', 'Endonuclease', 'Enzyme inhibitor', 'Exonuclease',
+         'Fungicide', 'Glycosidase', 'Helicase', 'Hemolytic', 'Hydrolase', 'Hypotensive', 'Ichthyotoxic', 'Insecticidal',
+         'Isomerase', 'Kinase', 'Lantibiotic', 'Lectin', 'Ligase', 'Lyase', 'Metalloenzyme inhibitor', 'Metalloprotease inhibitor',
+         'Metalloprotease', 'Methyltransferase', 'Milk protein', 'Non-hemolytic protein', 'Non-ribosomal protein', 'Nuclease',
+         'Nucleotidyltransferase', 'Oxidoreductase', 'Peroxidase', 'Plant defense', 'Platelet aggregation inhibiting toxin',
+         'Protease inhibitor', 'Protease', 'Protein kinase inhibitor', 'Protein synthesis inhibitor', 'Proteolytic',
+         'Ribosomal protein', 'RNA-directed DNA polymerase', 'Rotamase', 'Serine protease inhibitor', 'Serine protease',
+         'Serine threonine-protein kinase', 'Signal peptide', 'Spermicidal', 'Synergistic peptide', 'Thiol protease inhibitor',
+         'Thiol protease', 'Toxin', 'Transferase', 'Tumor suppressor', 'Wound healing']
+        )
 
-
+###  Blast should reject "ampdb1" && add multi acc id 
 
     submit = lit.button('Submit')
-    if file_query:
-        query = StringIO(file_query.getvalue().decode("utf-8")).read().upper()
-    if query and len([i for i in query.split('\n') if i!=''])==1 and 'AMPDB_' in query:
-        with open('master_dataset.tsv') as f:
-            l = ' '
-            while(True):
-                i = f.readline()
-                if i=='':
-                    lit.error('The AMPDB Acc. ID does not match with our database. Please re-check')
+  
+    if query and submit:
+        lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
+        
+        if file_query:
+            query = StringIO(file_query.getvalue().decode("utf-8")).read().upper()
+
+        if query and 'AMPDB' in query:
+            check = [i for i in query.split('\n') if i!= '']
+            for i in check:
+                if '_' not in i and i.isalnum():
+                    lit.info('If you are trying to enter AMPDB Acc. ID, please make sure it is in correct format (e.g. AMPDB_1)')
                     query = None
                     break
-                j = i.split('\t')
-                if query in j[1]:
-                    query = '>'+query+'\n'+j[3]
-                    break                
-    if query and submit:
-        command
-        lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
-        open('blast_input.txt', 'w').write(query)
-        if outfmt == 'def':
-            proc.Popen((command+' -out blast_output_def1 -outfmt 0').split())
-            proc.run((command+' -out blast_output_def2 -outfmt 7').split())
-        else:
-            proc.run((command+' -out blast_output -outfmt '+outfmt).split())
-            
-        lit.info("Your output below: [Formats 7-13 show no output when no hits are found]")
 
-        if outfmt == 'def':
-            myFile = [i for i in open('blast_output_def2').readlines()]
-            lit.text(''.join([i for i in myFile[:5] if '# Fields: ' not in i]))
-            try:
+        elif 'AMPDB' not in query and query.isalnum():
+            lit.info('Please re-check your input for invalid characters')
+            query =None
+        
+            
+        if query and 'AMPDB_' in query:
+            query = [i for i in query.replace(' ', '').split('\n') if i!='']
+            with open('master_dataset.tsv') as f, open('blast_input.txt', 'w') as g:
+                for k in query:
+                    f.seek(0,0)
+                    l = ' '
+                    while(True):
+                        i = f.readline()
+                        if i=='':
+                            lit.error(f'The AMPDB Acc. ID {k} does not match with our database. Please re-check')
+                            query = None
+                            break
+                        j = i.split('\t')
+                        if k in j[1]:
+                            g.write('>'+k+'\n'+j[3]+'\n')
+                            break
+        elif query:
+            open('blast_input.txt', 'w').write(query)
+
+        if query:
+
+            if len(selections) != 0:
+                command += ' -db new_dataset'
+                with open('new_dataset', 'w') as new_dataset:
+                    for row in open('master_dataset.tsv').readlines():
+                            for dataset in selections:
+                                if dataset + ';' in row:
+                                    cells = row.split('\t')
+                                    acc = cells[1]
+                                    seq = cells[3]
+                                    new_dataset.write('>'+acc+'\n'+seq+'\n')
+                                    break
+                                
+                proc.run("makeblastdb -in new_dataset -dbtype prot -title new_database".split())
+            else:
+                command += ' -db ampdb'
+
+            if outfmt == 'def':
+                proc.Popen((command+' -out blast_output_def1 -outfmt 0').split())
+                proc.run((command+' -out blast_output_def2 -outfmt 7').split())
+            else:
+                proc.run((command+' -out blast_output -outfmt '+outfmt).split())
+            
+            lit.info("Your output below: [Formats 7-13 show no output when no hits are found]")
+
+
+            if outfmt == 'def':
+                myFile = [i for i in open('blast_output_def2').readlines()]
+                lit.text(''.join([i for i in myFile[:5] if '# Fields: ' not in i]))
+                try:
+                    headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
+                    data = [i.strip().split('\t') for i in myFile if '#' not in i]
+                    myDF = pd.DataFrame(data, columns=headers)
+                    del myFile, data, headers
+                    lit.table(myDF)
+                    lit.markdown('<br><br><u><b>*Alignments:*</b></u><br>', unsafe_allow_html=True)
+                    myDF.to_csv('blast_output_def2', sep='\t')
+
+                    output1 = ''.join(open('blast_output_def1').readlines()[18:])
+                    crsr = 0
+                    for i in range(len(output1)):
+                        if '>' in output1[i]:
+                            crsr = i
+                            break
+                    output1 = ''.join(output1[crsr:])
+                    lit.text(output1)
+                    open('blast_output_def1', 'w').write(output1)
+
+                    open('blast_output', 'w').write(open('blast_output_def2').read() +'\n\nAlignments:\n'+ open('blast_output_def1').read())
+                    lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+                except:
+                    lit.text("No hits found")
+
+            elif outfmt == '0':
+                myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+                lit.text(myFile)
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+            elif outfmt == '1':
+                myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+                lit.text(myFile)
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+            elif outfmt == '2':
+                myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+                lit.text(myFile)
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+            elif outfmt == '3':
+                myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+                lit.text(myFile)
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+            elif outfmt == '4':
+                myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
+                lit.text(myFile)
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+
+            elif outfmt == '5':
+                myFile = ''.join(open('blast_output').readlines()[18:])
+                lit.text(myFile)
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.xml')
+                
+            elif outfmt == '6' or outfmt == '10':
+                lit.text('(Please choose "Tabular with comment lines" to see column headers)')
+                myFile = pd.DataFrame([(i.strip().split(',') if ',' in i else i.strip().split('\t')) for i in open('blast_output').readlines()])
+                lit.table(myFile)
+                if outfmt == '6':
+                    myFile.to_csv('blast_output', sep='\t')
+                    lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.tsv')
+                elif outfmt == '10':
+                    myFile.to_csv('blast_output')
+                    lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.csv')
+
+            elif outfmt == '7':
+                myFile = [i for i in open('blast_output').readlines()]
                 headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
                 data = [i.strip().split('\t') for i in myFile if '#' not in i]
                 myDF = pd.DataFrame(data, columns=headers)
                 del myFile, data, headers
                 lit.table(myDF)
-                lit.markdown('<br><br><u><b>*Alignments:*</b></u><br>', unsafe_allow_html=True)
-                myDF.to_csv('blast_output_def2', sep='\t')
-
-                output1 = ''.join(open('blast_output_def1').readlines()[18:])
-                crsr = 0
-                for i in range(len(output1)):
-                    if '>' in output1[i]:
-                        crsr = i
-                        break
-                output1 = ''.join(output1[crsr:])
-                lit.text(output1)
-                open('blast_output_def1', 'w').write(output1)
-
-                open('blast_output', 'w').write(open('blast_output_def2').read() +'\n\nAlignments:\n'+ open('blast_output_def1').read())
-                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
-            except:
-                lit.text("No hits found")
-
-        elif outfmt == '0':
-            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-            lit.text(myFile)
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
-
-        elif outfmt == '1':
-            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-            lit.text(myFile)
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
-
-        elif outfmt == '2':
-            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-            lit.text(myFile)
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
-
-        elif outfmt == '3':
-            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-            lit.text(myFile)
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
-
-        elif outfmt == '4':
-            myFile = ''.join([i for i in open('blast_output').readlines()[18:]])
-            lit.text(myFile)
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
-
-        elif outfmt == '5':
-            myFile = ''.join(open('blast_output').readlines()[18:])
-            lit.text(myFile)
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.xml')
-            
-        elif outfmt == '6' or outfmt == '10':
-            lit.text('(Please choose "Tabular with comment lines" to see column headers)')
-            myFile = pd.DataFrame([(i.strip().split(',') if ',' in i else i.strip().split('\t')) for i in open('blast_output').readlines()])
-            lit.table(myFile)
-            if outfmt == '6':
-                myFile.to_csv('blast_output', sep='\t')
-                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.tsv')
-            elif outfmt == '10':
-                myFile.to_csv('blast_output')
+                myDF.to_csv('blast_output', sep='\t')
                 lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.csv')
 
-        elif outfmt == '7':
-            myFile = [i for i in open('blast_output').readlines()]
-            headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
-            data = [i.strip().split('\t') for i in myFile if '#' not in i]
-            myDF = pd.DataFrame(data, columns=headers)
-            del myFile, data, headers
-            lit.table(myDF)
-            myDF.to_csv('blast_output', sep='\t')
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.csv')
+            elif outfmt == '8':
+                myFile = ''.join(open('blast_output').readlines())
+                lit.text(myFile)
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
 
-        elif outfmt == '8':
-            myFile = ''.join(open('blast_output').readlines())
-            lit.text(myFile)
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.txt')
+            elif outfmt == '9':
+                lit.text('Binary output cannot be displayed in browser. Please download file to view output')
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
 
-        elif outfmt == '9':
-            lit.text('Binary output cannot be displayed in browser. Please download file to view output')
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
+            elif outfmt == '11':
+                myFile = ''.join(open('blast_output').readlines())
+                lit.text(myFile)
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.asn')
 
-        elif outfmt == '11':
-            myFile = ''.join(open('blast_output').readlines())
-            lit.text(myFile)
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.asn')
-
-        elif outfmt == '12':
-            myFile = ''.join(open('blast_output').readlines())
-            lit.text(myFile)
-            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.json')
-##        #########################################################
-##        if  outfmt=='9':
-##            lit.download_button("Download output file", open('blast_output', 'rb'), file_name='BLAST_out')
-##        else:
-##            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
-##        #########################################################
+            elif outfmt == '12':
+                myFile = ''.join(open('blast_output').readlines())
+                lit.text(myFile)
+                lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out.json')
+    ##        #########################################################
+    ##        if  outfmt=='9':
+    ##            lit.download_button("Download output file", open('blast_output', 'rb'), file_name='BLAST_out')
+    ##        else:
+    ##            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
+    ##        #########################################################
     elif submit and not query:
         lit.error("Please enter input sequence!")
 
@@ -294,6 +353,10 @@ if 'Needleman-Wunsch' in tool:
     lit.markdown('<br>', unsafe_allow_html=True)
     subject = mysubject = lit.text_area('Enter your subject protein sequence here:', height=200).upper()
     file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
+
+    gap_open_penalty = lit.text_input("Please enter the gap open penalry: ")
+    gap_extend_penalty = lit.text_input("Please enter the gap extend penalry: ")
+    
     submit = lit.button('Submit')
     if file_query:
         query = myquery = StringIO(file_query.getvalue().decode("utf-8")).read().upper()
@@ -349,7 +412,8 @@ if 'Needleman-Wunsch' in tool:
                         break
         if query and subject:
             lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
-            alignment, score, start_end_positions = galign(Protein(query.strip()), Protein(subject.strip()))
+            alignment, score, start_end_positions = galign(Protein(query.strip()), Protein(subject.strip()),
+                                                           gap_open_penalty=gap_open_penalty, gap_extend_penalty=gap_extend_penalty)
             lit.info("Your output below:")
             lit.text(alignment)
             lit.markdown('''<br>''', unsafe_allow_html=True)
@@ -378,6 +442,10 @@ if 'Smith-Waterman' in tool:
     lit.markdown('<br>', unsafe_allow_html=True)
     subject = mysubject = lit.text_area('Enter your subject protein sequence here', height=200).upper()
     file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
+    
+    gap_open_penalty = lit.text_input("Please enter the gap open penalry: ")
+    gap_extend_penalty = lit.text_input("Please enter the gap extend penalry: ")
+    
     submit = lit.button('Submit')
     if file_query:
         query = myquery = StringIO(file_query.getvalue().decode("utf-8")).read().upper()
@@ -432,7 +500,8 @@ if 'Smith-Waterman' in tool:
                         break
         if query and subject:
             lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
-            alignment, score, start_end_positions = lalign(Protein(query.strip()), Protein(subject.strip()))
+            alignment, score, start_end_positions = lalign(Protein(query.strip()), Protein(subject.strip()),
+                                                           gap_open_penalty=gap_open_penalty, gap_extend_penalty=gap_extend_penalty)
             lit.info("Your output below:")
             lit.text(alignment)
             alignment.write(open('SWFile', 'w'))

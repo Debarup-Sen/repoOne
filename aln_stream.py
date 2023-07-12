@@ -121,7 +121,7 @@ if 'BLASTp' in tool:
                     query = None
                     break
 
-        elif 'AMPDB' not in query and '>' not in query and query.isalnum():
+        elif 'AMPDB' not in query and '>' not in query and any(char.isdigit() for char in query):
             lit.info('Please re-check your input for invalid characters')
             query =None
         

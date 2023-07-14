@@ -54,7 +54,11 @@ if 'BLASTp' in tool:
 
     lit.text('Customization parameters & choices:')
     command = 'blastp -query blast_input.txt '
-    task = lit.radio("Type of task:", ('blastp', 'blastp-fast', 'blastp-short'))
+    task = 'blastp'
+##    task = lit.radio("Type of task:",
+##                     ('blastp',
+##                      'blastp-fast (a faster version of blastp that uses a larger word size (6 vs 2-3))',
+##                      'blastp-short (blastp optimized for queries shorter than 30 residues)'))
     if task: command += '-task '+task
     evalue = lit.text_input("Please enter e-value:")
     if evalue: command += ' -evalue '+evalue
@@ -123,7 +127,7 @@ if 'BLASTp' in tool:
 
         elif 'AMPDB' not in query and '>' not in query and any(char.isdigit() for char in query):
             lit.info('Please re-check your input for invalid characters')
-            query =None
+            query = None
         
             
         if query and 'AMPDB_' in query and '>' not in query:
@@ -195,10 +199,30 @@ if 'BLASTp' in tool:
                 lit.text(''.join([i for i in myFile[:5] if '# Fields: ' not in i]))
                 try:
                     headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
+                    headers = (['Description', 'Source Organism', 'Gene name', 'Activity'] +
+                                headers[2:] +
+                               ['AMPDB Accession', 'UniProtKB Accession'])
                     data = [i.strip().split('\t') for i in myFile if '#' not in i]
+                    my_file = open("master_dataset.tsv").readlines()
+    ##                lit.write(data[i])
+                    for i in range(len(data)):
+                        for j in range(len(my_file)):
+                            if str(data[i][1].split('|')[0]) in my_file[j]:
+                                line = my_file[j].split('\t')
+                                accs = data[i][1].split('|')
+                                data[i] = (
+                                            line[4:] +
+                                            data[i][2:] +
+                                            [
+                                                f'<a target="_blank" href="https://bblserver.org.in/ampdb/entry?id={accs[0]}">{accs[0]}</a>',#f"[{accs[0]}](https://bblserver.org.in/ampdb/entry?id={accs[0]})",
+                                                f'<a target="_blank" href="https://www.uniprot.org/uniprotkb/{accs[1]}/entry">{accs[1]}</a>'
+                                            ]
+                                          )
+                                break
+                                
                     myDF = pd.DataFrame(data, columns=headers)
                     del myFile, data, headers
-                    lit.table(myDF)
+                    lit.write("<div style='font-size: 10px'>" + myDF.to_html(escape=False, index=False) + "</div>", unsafe_allow_html=True)
                     lit.markdown('<br><br><u><b>*Alignments:*</b></u><br>', unsafe_allow_html=True)
                     myDF.to_csv('blast_output_def2', sep='\t')
 

@@ -199,7 +199,7 @@ if 'BLASTp' in tool:
                 lit.text(''.join([i for i in myFile[:5] if '# Fields: ' not in i]))
                 try:
                     headers = [i for i in myFile if '# Fields: ' in i][0].replace('# Fields: ','').split(',')
-                    headers = (['Description', 'Source Organism', 'Gene name', 'Activity'] +
+                    headers = (['Description', 'Source Organism', 'Gene name'] +
                                 headers[2:] +
                                ['AMPDB Accession', 'UniProtKB Accession'])
                     data = [i.strip().split('\t') for i in myFile if '#' not in i]
@@ -211,7 +211,7 @@ if 'BLASTp' in tool:
                                 line = my_file[j].split('\t')
                                 accs = data[i][1].split('|')
                                 data[i] = (
-                                            line[4:] +
+                                            line[4:-1] +
                                             data[i][2:] +
                                             [
                                                 f'<a target="_blank" href="https://bblserver.org.in/ampdb/entry?id={accs[0]}">{accs[0]}</a>',#f"[{accs[0]}](https://bblserver.org.in/ampdb/entry?id={accs[0]})",
@@ -222,7 +222,7 @@ if 'BLASTp' in tool:
                                 
                     myDF = pd.DataFrame(data, columns=headers)
                     del myFile, data, headers
-                    lit.write("<div style='font-size: 10px'>" + myDF.to_html(escape=False, index=False) + "</div>", unsafe_allow_html=True)
+                    lit.write("<div style='font-size: 14px; overflow-x: auto; overflow-y: auto'>" + myDF.to_html(escape=False, index=False) + "</div>", unsafe_allow_html=True)
                     lit.markdown('<br><br><u><b>*Alignments:*</b></u><br>', unsafe_allow_html=True)
                     myDF.to_csv('blast_output_def2', sep='\t')
 

@@ -157,7 +157,7 @@ if 'BLASTp' in tool:
                             for dataset in selections:
                                 if dataset + ';' in row:
                                     cells = row.split('\t')
-                                    acc = cells[1]
+                                    acc = cells[1] + '|' + cells[2]
                                     seq = cells[3]
                                     new_dataset.write('>'+acc+'\n'+seq+'\n')
                                     break

@@ -110,7 +110,7 @@ if 'BLASTp' in tool:
 
     submit = lit.button('Submit')
   
-    if query and submit:
+    if (query or file_query) and submit:
         lit.info("Input has been successfully submitted. Please wait till processing is completed. Results will appear below.")
         
         if file_query:

@@ -344,7 +344,7 @@ if 'BLASTp' in tool:
     ##        else:
     ##            lit.download_button("Download output file", open('blast_output'), file_name='BLAST_out')
     ##        #########################################################
-    elif submit and not query:
+    elif submit and not (query or file_query):
         lit.error("Please enter input sequence!")
 
 if 'MUSCLE' in tool:

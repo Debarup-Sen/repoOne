@@ -9,7 +9,7 @@ import pandas as pd
 from io import StringIO
 
 
-lit.set_page_config(layout='wide')
+lit.set_page_config(layout='wide', page_title="AMPDB")
 
 lit.write("""
 # Welcome to the AMPDB Sequence Alignment Toolbox!

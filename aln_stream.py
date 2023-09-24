@@ -8,6 +8,7 @@ from skbio import Protein
 import pandas as pd
 from io import StringIO
 
+lit.text(
 
 lit.set_page_config(layout='wide', page_title="AMPDB")
 
@@ -353,7 +354,7 @@ if 'MUSCLE' in tool:
     file_query = lit.file_uploader("Or, you may upload file")#, label_visibility="collapsed")
     lit.markdown('<br>', unsafe_allow_html=True)
     
-    command = 'wsl muscle -in muscle_input.txt -out muscle_output '
+    command = 'muscle -in muscle_input.txt -out muscle_output '
     
     muscol1, muscol2 = lit.columns(2)
     with muscol1:

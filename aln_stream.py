@@ -12,7 +12,7 @@ lit.text(
 
 lit.set_page_config(layout='wide', page_title="AMPDB")
 
-lit.write("""
+#lit.write("""
 # Welcome to the AMPDB Sequence Alignment Toolbox!
 *A toolbox for all alignment purposes.*
 

@@ -425,10 +425,20 @@ if 'Needleman-Wunsch' in tool:
     lit.markdown('<br>', unsafe_allow_html=True)
     subject = mysubject = lit.text_area('Enter your subject protein sequence here:', height=200).upper()
     file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
-
-    gap_open_penalty = lit.text_input("Please enter the gap open penalry: ")
-    gap_extend_penalty = lit.text_input("Please enter the gap extend penalry: ")
-    
+    gap_open_penalty = 0
+    gap_extend_penalty = 0
+    try:
+        gap_open_penalty = float(lit.text_input("Please enter the gap open penalty: "))
+    except:
+        pass
+    if not gap_open_penalty:
+        gap_open_penalty = 11
+    try:        
+        gap_extend_penalty = float(lit.text_input("Please enter the gap extend penalty: "))
+    except:
+        pass
+    if not gap_extend_penalty:
+        gap_extend_penalty = 1
     submit = lit.button('Submit')
     if file_query:
         query = myquery = StringIO(file_query.getvalue().decode("utf-8")).read().upper()
@@ -514,10 +524,20 @@ if 'Smith-Waterman' in tool:
     lit.markdown('<br>', unsafe_allow_html=True)
     subject = mysubject = lit.text_area('Enter your subject protein sequence here', height=200).upper()
     file_subject = lit.file_uploader("Or, you may upload subject file")#, label_visibility="collapsed")
-    
-    gap_open_penalty = lit.text_input("Please enter the gap open penalry: ")
-    gap_extend_penalty = lit.text_input("Please enter the gap extend penalry: ")
-    
+    gap_open_penalty = 0
+    gap_extend_penalty = 0
+    try:
+        gap_open_penalty = float(lit.text_input("Please enter the gap open penalty: "))
+    except:
+        pass
+    if not gap_open_penalty:
+        gap_open_penalty = 11
+    try:        
+        gap_extend_penalty = float(lit.text_input("Please enter the gap extend penalty: "))
+    except:
+        pass
+    if not gap_extend_penalty:
+        gap_extend_penalty = 1
     submit = lit.button('Submit')
     if file_query:
         query = myquery = StringIO(file_query.getvalue().decode("utf-8")).read().upper()
